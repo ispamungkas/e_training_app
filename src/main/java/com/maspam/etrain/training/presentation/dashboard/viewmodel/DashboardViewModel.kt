@@ -1,0 +1,146 @@
+package com.maspam.etrain.training.presentation.dashboard.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.maspam.etrain.training.core.domain.utils.NetworkError
+import com.maspam.etrain.training.core.domain.utils.onError
+import com.maspam.etrain.training.core.domain.utils.onSuccess
+import com.maspam.etrain.training.domain.datasource.local.proto.UserSessionDataSource
+import com.maspam.etrain.training.domain.datasource.network.EnrollDataSource
+import com.maspam.etrain.training.domain.datasource.network.NewsDataSource
+import com.maspam.etrain.training.domain.datasource.network.TrainingDataSource
+import com.maspam.etrain.training.presentation.dashboard.state.DashboardState
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class DashboardViewModel(
+    private val userSessionDataSource: UserSessionDataSource,
+    private val trainingDataSource: TrainingDataSource,
+    private val enrollDataSource: EnrollDataSource,
+    private val newsDataSource: NewsDataSource,
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(DashboardState())
+    val state = _state
+        .onStart {
+            getNews()
+            getOpenTraining()
+            getUser()
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+            DashboardState(isLoading = true),
+        )
+
+    private val _event = Channel<EventDashboard>()
+    val event = _event.receiveAsFlow()
+
+    private fun getUser() {
+        viewModelScope.launch {
+            userSessionDataSource.getUserSession()
+                .collect(collector = { data ->
+                    _state.update { it.copy(user = data) }
+                })
+        }
+    }
+
+    fun getNews() {
+        viewModelScope.launch {
+            newsDataSource.getAllNews()
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = error
+                        )
+                    }
+                }
+                .onSuccess { result ->
+                    _state.update {
+                        it.copy(
+                            news = result.slice(0..3)
+                        )
+                    }
+                }
+        }
+    }
+
+    fun getOpenTraining() {
+        viewModelScope.launch {
+            trainingDataSource.getOpenTraining(
+                token = userSessionDataSource.getToken(),
+                isPublish = false
+            )
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
+                    _event.send(EventDashboard.Error(error))
+                }
+                .onSuccess { result ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            openTrain = result.sortedByDescending { train -> train.id }
+                        )
+                    }
+                }
+        }
+    }
+
+    fun enrollTraining(trainingId: Int) {
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            enrollDataSource.enrollTraining(
+                token = userSessionDataSource.getToken(),
+                userId = userSessionDataSource.getId(),
+                trainingId = trainingId
+            )
+                .onError { e ->
+                    _state.update { it.copy(
+                        isLoading = false
+                    ) }
+                    _event.send(EventDashboard.Error(e))
+                }
+                .onSuccess {
+                    _state.update { it.copy(
+                        isLoading = false
+                    ) }
+                }
+        }
+    }
+
+    fun setError(e: NetworkError?) {
+        _state.update {
+            it.copy(
+                error = e
+            )
+        }
+    }
+
+    fun setModalBottomSheetState(value: Boolean, id: Int? = null) {
+        _state.update {
+            it.copy(
+                isBottomSheetShow = value,
+                selectedTrain = id?.let { selectedId ->
+                    it.openTrain?.first { openTrain -> openTrain.id == selectedId }
+                }
+            )
+        }
+    }
+
+
+    sealed class EventDashboard {
+        data class Error(val e: NetworkError) : EventDashboard()
+    }
+
+}

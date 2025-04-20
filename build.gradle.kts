@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://41a7-180-254-73-204.ngrok-free.app/\"")
+            buildConfigField("String", "BASE_URL", "\"https://c3ac-180-254-76-238.ngrok-free.app/\"")
         }
         release {
             isMinifyEnabled = false
@@ -77,6 +77,9 @@ dependencies {
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.kotlinx.coroutines.android)
+
+    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.compose.foundation:foundation:1.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

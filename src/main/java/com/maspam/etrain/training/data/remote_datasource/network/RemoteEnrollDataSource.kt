@@ -6,18 +6,22 @@ import com.maspam.etrain.training.core.domain.utils.map
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.networking.safeCall
 import com.maspam.etrain.training.data.dto.BaseDto
+import com.maspam.etrain.training.data.dto.CertificateDto
 import com.maspam.etrain.training.data.dto.EnrollDto
+import com.maspam.etrain.training.data.mapper.toCertificateModel
 import com.maspam.etrain.training.data.mapper.toEnrollModel
 import com.maspam.etrain.training.domain.datasource.network.EnrollDataSource
+import com.maspam.etrain.training.domain.model.CertificateModel
 import com.maspam.etrain.training.domain.model.EnrollModel
 import io.ktor.client.HttpClient
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
 class RemoteEnrollDataSource(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ): EnrollDataSource {
     override suspend fun enrollTraining(
         token: String,
@@ -65,6 +69,63 @@ class RemoteEnrollDataSource(
             }
         }.map { response ->
             response.data?.map { it.toEnrollModel() } ?: emptyList()
+        }
+    }
+
+    override suspend fun updateProgressTraining(
+        token: String,
+        enrollId: Int,
+        section: Int,
+        topic: Int
+    ): Result<EnrollModel, NetworkError> {
+        val body = mapOf(
+            "p_learn" to section,
+            "s_learn" to topic
+        )
+        return safeCall <BaseDto<EnrollDto>>{
+            httpClient.post(
+                urlString = constructUrl("/enroll/?id=$enrollId"),
+            ) {
+                bearerAuth(token = token)
+                setBody(body)
+            }
+        }.map { response ->
+            response.data?.toEnrollModel() ?: EnrollModel()
+        }
+    }
+
+    override suspend fun takePostTest(
+        token: String,
+        enrollId: Int
+    ): Result<EnrollModel, NetworkError> {
+        val body = mapOf(
+            "t_post" to true,
+        )
+        return safeCall <BaseDto<EnrollDto>>{
+            httpClient.patch(
+                urlString = constructUrl("/enroll/$enrollId"),
+            ) {
+                bearerAuth(token = token)
+                setBody(body)
+            }
+        }.map { response ->
+            response.data?.toEnrollModel() ?: EnrollModel()
+        }
+    }
+
+    override suspend fun createCertificate(token: String, userId: Int, enrollId: Int): Result<CertificateModel, NetworkError> {
+        val body = mapOf(
+            "t_post" to true,
+        )
+        return safeCall <BaseDto<CertificateDto>>{
+            httpClient.patch(
+                urlString = constructUrl("/certificate/"),
+            ) {
+                bearerAuth(token = token)
+                setBody(body)
+            }
+        }.map { response ->
+            response.data?.toCertificateModel() ?: CertificateModel()
         }
     }
 }

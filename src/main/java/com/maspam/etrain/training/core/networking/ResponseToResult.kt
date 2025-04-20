@@ -17,7 +17,7 @@ suspend inline fun <reified T> responseToResult(
                 Result.Error(error = NetworkError.SERIALIZATION)
             }
         }
-        301 -> Result.Error(error = NetworkError.UNAUTHORIZED)
+        401 -> Result.Error(error = NetworkError.UNAUTHORIZED)
         400 -> Result.Error(error = NetworkError.BAD_REQUEST)
         406 -> Result.Error(error = NetworkError.NOT_ACCEPTED)
         404 -> Result.Error(error = NetworkError.NOT_FOUND)

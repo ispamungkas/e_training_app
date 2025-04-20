@@ -1,10 +1,12 @@
 package com.maspam.etrain.training.presentation.news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +24,7 @@ import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.core.presentation.utils.eventListener
+import com.maspam.etrain.training.domain.model.NewsModel
 import com.maspam.etrain.training.presentation.dashboard.component.LoadingComponent
 import com.maspam.etrain.training.presentation.dashboard.component.NewsItemComponent
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
@@ -30,6 +33,7 @@ import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
 @Composable
 fun ListNewsPage(
     listNewsViewModel: ListNewsViewModel,
+    navigateToDetailNews: (NewsModel) -> Unit,
     onBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,10 +65,11 @@ fun ListNewsPage(
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar = {
             TopBarWithArrowComponent(
-                section = "Open Training",
+                section = "News",
                 onBackPress = onBackPressed
             )
         }
@@ -80,13 +85,16 @@ fun ListNewsPage(
                 }
             } else {
                 state.listNews?.let {
-                    items(items = it, key = { x -> x.publishDate ?: 0 }) { news ->
+                    items(items = it) { news ->
                         NewsItemComponent(
                             image = news.image,
                             newsHeadline = news.desc,
                             author = news.author,
                             postDate = news.publishDate,
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
+                                .clickable {
+                                    navigateToDetailNews(news)
+                                }
                         )
                     }
 

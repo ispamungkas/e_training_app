@@ -91,8 +91,17 @@ data class DetailEnrollTrainingScreen(
  * Training Screen
  */
 
+@Serializable
 data class DetailTrainingScreen(
     val trainingModel: TrainingModel
+)
+
+/**
+ * Take Training Screen
+ */
+@Serializable
+data class TakeTrainingScreen(
+    val enrollModel: EnrollModel
 )
 
 

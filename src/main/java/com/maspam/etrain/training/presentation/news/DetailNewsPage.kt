@@ -1,6 +1,8 @@
 package com.maspam.etrain.training.presentation.news
 
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,23 +40,27 @@ fun DetailNewsPage(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar =  {
             TopBarWithArrowComponent (
                 section = "Detail News",
-                onBackPress = onBackPressed
+                onBackPress = onBackPressed,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
             )
         }
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .verticalScroll(scrollState)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(scrollState)
                     .align(alignment = Alignment.TopCenter)
             ) {
                 AsyncImage(
@@ -61,6 +70,8 @@ fun DetailNewsPage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                        .clip(shape = RoundedCornerShape(15.dp))
                 )
                 Text(
                     text = newsName,
@@ -73,21 +84,23 @@ fun DetailNewsPage(
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = newsAuthor,
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         overflow = TextOverflow.Clip,
                     )
                     Text(
                         text = newsPublish.toDateTimeVersion2Formatter(),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         overflow = TextOverflow.Clip,
                     )
                 }
                 Text(
                     text = newsContent,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .fillMaxWidth()

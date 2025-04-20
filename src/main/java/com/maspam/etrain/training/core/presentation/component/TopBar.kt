@@ -1,5 +1,6 @@
 package com.maspam.etrain.training.core.presentation.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.composables.icons.lucide.ChevronLeft
 import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Menu
 import com.maspam.etrain.R
 
 @Composable
@@ -72,6 +75,98 @@ fun TopBarComponent(
 }
 
 @Composable
+fun TopBarWithStartImage(
+    name: String = "",
+    modifier: Modifier = Modifier,
+    onIconClicked: () -> Unit,
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.app_info_image),
+            contentDescription = "Icon App",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(50.dp)
+                .clip(shape = RoundedCornerShape(100))
+                .clickable {
+                    onIconClicked()
+                },
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        )
+    }
+}
+
+@Composable
+fun TopBarWithHumbergerIcon(
+    name: String = "",
+    modifier: Modifier = Modifier,
+    onIconClicked: () -> Unit,
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp)
+    ) {
+        Icon(
+            imageVector = Lucide.Menu,
+            contentDescription = "Icon App",
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(100))
+                .clickable {
+                    onIconClicked()
+                },
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        )
+    }
+}
+
+@Composable
+fun TopBarWithHumbergerIconSingle(
+    modifier: Modifier = Modifier,
+    onIconClicked: () -> Unit,
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 10.dp)
+    ) {
+        Icon(
+            imageVector = Lucide.Menu,
+            contentDescription = "Icon App",
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(100))
+                .clickable {
+                    onIconClicked()
+                },
+        )
+    }
+}
+
+@Composable
 fun TopBarWithArrowComponent(
     section: String? = "",
     modifier: Modifier = Modifier,
@@ -104,7 +199,7 @@ fun TopBarWithArrowComponent(
 @Preview
 @Composable
 fun Check(modifier: Modifier = Modifier) {
-    TopBarWithArrowComponent(
-        section = "maspam"
-    ) {}
+    TopBarWithHumbergerIcon(
+        name = "Post Test"
+    ) {  }
 }

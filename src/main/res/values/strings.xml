@@ -103,4 +103,5 @@
     <string name="welcome_word">Login Berhasil. Selamat datang kembali</string>
     <string name="update_profile_successfully">Pembaharuan profil berhasil</string>
     <string name="enroll">Daftar pelatihan</string>
+    <string name="contine">Lanjutkan</string>
 </resources>

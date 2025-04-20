@@ -42,6 +42,7 @@ fun NetworkError.ToComposable(
             RequestTimeOut()
         }
         NetworkError.UNAUTHORIZED -> {
+            println("masuk error")
             UnAuthorizedErrorDialog(
                 message = stringResource(R.string.session_was_ended),
                 onResponse = navigateToLoginPage

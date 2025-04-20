@@ -36,6 +36,11 @@ class ListNewsViewModel(
     val event = _event.receiveAsFlow()
 
     fun getNews() {
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
         viewModelScope.launch {
             newsDataSource.getAllNews()
                 .onError { error ->
@@ -49,6 +54,7 @@ class ListNewsViewModel(
                 .onSuccess { result ->
                     _state.update {
                         it.copy(
+                            isLoading = false,
                             listNews = result
                         )
                     }

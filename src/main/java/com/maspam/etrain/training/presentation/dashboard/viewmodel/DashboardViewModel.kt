@@ -82,6 +82,7 @@ class DashboardViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            error = error
                         )
                     }
                     _event.send(EventDashboard.Error(error))
@@ -107,7 +108,8 @@ class DashboardViewModel(
             )
                 .onError { e ->
                     _state.update { it.copy(
-                        isLoading = false
+                        isLoading = false,
+                        error = e
                     ) }
                     _event.send(EventDashboard.Error(e))
                 }

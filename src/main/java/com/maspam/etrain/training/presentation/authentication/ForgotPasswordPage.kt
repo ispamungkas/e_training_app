@@ -1,5 +1,6 @@
 package com.maspam.etrain.training.presentation.authentication
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,12 +28,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.lucide.Info
 import com.composables.icons.lucide.Lucide
 import com.maspam.etrain.R
-import com.maspam.etrain.training.core.presentation.component.CustomButtonFieldLoad
+import com.maspam.etrain.training.core.presentation.component.CustomButtonFieldLoad2
 import com.maspam.etrain.training.core.presentation.component.CustomNumberTextField
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.presentation.authentication.component.Head
 import com.maspam.etrain.training.presentation.authentication.viewmodel.ForgotPasswordViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ForgotPasswordPage(
     forgotPasswordViewModel: ForgotPasswordViewModel,
@@ -59,14 +61,13 @@ fun ForgotPasswordPage(
         )
     }
 
-    Scaffold(modifier = modifier) { innerPadding ->
+    Scaffold(modifier = modifier) {
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
             Column {
-                Head(section = stringResource(R.string.forgot_password), height = 150.dp)
+                Head(section = stringResource(R.string.forgot_password), height = 200.dp)
                 Row(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -83,12 +84,12 @@ fun ForgotPasswordPage(
                 CustomNumberTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                        .padding(start = 20.dp, top = 20.dp, end = 20.dp),
                     label = stringResource(R.string.input_nip)
                 ) {
                     value = it
                 }
-                CustomButtonFieldLoad(
+                CustomButtonFieldLoad2(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),

@@ -2,6 +2,7 @@ package com.maspam.etrain.training.presentation.enroll
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ fun DetailEnrollTraining(
     enroll: EnrollModel,
     scrollableState: ScrollState = rememberScrollState(initial = 0),
     onBackPressed: () -> Unit,
+    navigateToTakeTraining: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -71,6 +73,8 @@ fun DetailEnrollTraining(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp)
+                        .padding(start = 20.dp, top = 20.dp, end = 20.dp)
+                        .clip(shape = RoundedCornerShape(15.dp))
                 )
                 Text(
                     text = enroll.trainingDetail?.name ?: stringResource(R.string.name_training),
@@ -117,6 +121,9 @@ fun DetailEnrollTraining(
                     .clip(shape = RoundedCornerShape(30.dp))
                     .background(color = MaterialTheme.colorScheme.primary)
                     .align(alignment = Alignment.BottomEnd)
+                    .clickable {
+                        navigateToTakeTraining()
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -125,7 +132,9 @@ fun DetailEnrollTraining(
                         .padding(horizontal = 30.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        "Continue",
+                        text = if (enroll.attandance == true) stringResource(R.string.contine) else stringResource(
+                            R.string.get_started
+                        ),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onPrimary

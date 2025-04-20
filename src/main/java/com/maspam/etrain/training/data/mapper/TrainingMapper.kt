@@ -21,6 +21,9 @@ fun TrainingDto.toTrainingModel(): TrainingModel {
         totalJp = this.totalJp,
         sections = this.sections?.map {
             it.toSectionModel()
+        },
+        postTest = this.postTest?.map {
+            it.toPostTestModel()
         }
     )
 }

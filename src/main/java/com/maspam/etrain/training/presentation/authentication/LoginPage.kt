@@ -1,5 +1,6 @@
 package com.maspam.etrain.training.presentation.authentication
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import com.maspam.etrain.training.presentation.authentication.component.Head
 import com.maspam.etrain.training.presentation.authentication.event.AuthenticationFormEvent
 import com.maspam.etrain.training.presentation.authentication.viewmodel.AuthenticationViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginPage(
     authenticationViewModel: AuthenticationViewModel,
@@ -70,16 +72,15 @@ fun LoginPage(
     }
     Scaffold(
         modifier = modifier
-    ) { innerPadding ->
+    ) {
         Box(
             modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
             Column(modifier = Modifier) {
                 Head(
                     modifier = Modifier.fillMaxWidth(),
-                    stringResource(R.string.sing_in_to_your_account), height = 200.dp
+                    stringResource(R.string.sing_in_to_your_account), height = 250.dp
                 )
                 CustomNumberTextField(
                     modifier = modifier

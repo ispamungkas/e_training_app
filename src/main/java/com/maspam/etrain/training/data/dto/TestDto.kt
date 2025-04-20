@@ -4,17 +4,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostTestDto(
-    val id: Int?,
-    val train: Int?,
-    val question: List<String>?,
-    val answers: List< AnswerDto>?,
-    val section: Int?
+    val id: Int? = 0,
+    val train: Int? = 0,
+    val question: List<String>? = null,
+    val answers: List< AnswerDto>? = null,
+    val section: Int? = 0
 )
 
 @Serializable
 data class AnswerDto(
-    val id: Int?,
-    val post: Int?,
-    val user: Int?,
-    val ans: List<String>?
+    val id: Int? = 0,
+    val post: Int? = 0,
+    val user: Int? = 0,
+    val ans: List<String>? = null
 )

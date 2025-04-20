@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.NavType
 import com.maspam.etrain.training.domain.model.EnrollModel
+import com.maspam.etrain.training.domain.model.NewsModel
 import com.maspam.etrain.training.domain.model.UserModel
 import kotlinx.serialization.json.Json
 
@@ -46,6 +47,27 @@ object CustomNavType {
         }
 
         override fun put(bundle: Bundle, key: String, value: EnrollModel) {
+            bundle.putString(key, Json.encodeToString(value))
+        }
+
+    }
+
+    val newsModel = object :  NavType<NewsModel>(
+        isNullableAllowed = false
+    ) {
+        override fun get(bundle: Bundle, key: String): NewsModel? {
+            return Json.decodeFromString(bundle.getString(key) ?: return null)
+        }
+
+        override fun parseValue(value: String): NewsModel {
+            return Json.decodeFromString(Uri.decode(value))
+        }
+
+        override fun serializeAsValue(value: NewsModel): String {
+            return Uri.encode(Json.encodeToString(value))
+        }
+
+        override fun put(bundle: Bundle, key: String, value: NewsModel) {
             bundle.putString(key, Json.encodeToString(value))
         }
 

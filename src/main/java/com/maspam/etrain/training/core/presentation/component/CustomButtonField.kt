@@ -41,6 +41,27 @@ fun CustomButtonFieldLoad(isEnable: Boolean = true, modifier: Modifier = Modifie
 }
 
 @Composable
+fun CustomButtonFieldLoad2(isEnable: Boolean = true, modifier: Modifier = Modifier, buttonName: String, isLoading: Boolean = false, onClick: () -> Unit) {
+    FilledIconButton(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .bounceClick(),
+        enabled = isEnable,
+        shape = RoundedCornerShape(10.dp),
+        onClick = onClick,
+    ) {
+        Text(
+            text = if (isLoading) stringResource(R.string.loading) else buttonName ,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimary
+            ),
+        )
+    }
+}
+
+@Composable
 fun CustomButtonField(modifier: Modifier = Modifier, buttonName: String, buttonColor: Color, onClick: () -> Unit) {
     FilledIconButton(
         colors = IconButtonDefaults.iconButtonColors(

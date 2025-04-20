@@ -5,11 +5,13 @@ import com.maspam.etrain.training.core.presentation.utils.FileReader
 import com.maspam.etrain.training.data.remote_datasource.local.proto.RemoteUserSessionDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteAuthenticationDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteEnrollDataSource
+import com.maspam.etrain.training.data.remote_datasource.network.RemoteKaryaNyataDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteNewsDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteTrainingDataSource
 import com.maspam.etrain.training.domain.datasource.local.proto.UserSessionDataSource
 import com.maspam.etrain.training.domain.datasource.network.AuthenticationDataSource
 import com.maspam.etrain.training.domain.datasource.network.EnrollDataSource
+import com.maspam.etrain.training.domain.datasource.network.KaryaNyataDataSource
 import com.maspam.etrain.training.domain.datasource.network.NewsDataSource
 import com.maspam.etrain.training.domain.datasource.network.TrainingDataSource
 import com.maspam.etrain.training.presentation.authentication.viewmodel.AuthenticationViewModel
@@ -19,9 +21,11 @@ import com.maspam.etrain.training.presentation.authentication.viewmodel.OTPViewM
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardViewModel
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.ListOpenTrainingViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
+import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.ProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdateDataProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdatePasswordProfileViewModel
+import com.maspam.etrain.training.presentation.taketraining.viewmodel.TakeTrainingViewModel
 import com.maspam.etrain.training.presentation.training.viewmodel.TrainingViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.android.ext.koin.androidApplication
@@ -41,6 +45,7 @@ val appModule = module {
     singleOf(::RemoteTrainingDataSource).bind<TrainingDataSource>()
     singleOf(::RemoteNewsDataSource).bind<NewsDataSource>()
     singleOf(::RemoteEnrollDataSource).bind<EnrollDataSource>()
+    singleOf(::RemoteKaryaNyataDataSource).bind<KaryaNyataDataSource>()
 
     viewModelOf(::OTPViewModel)
     viewModelOf(::ForgotPasswordViewModel)
@@ -53,4 +58,6 @@ val appModule = module {
     viewModelOf(::ProfileViewModel)
     viewModelOf(::ListEnrollProfileViewModel)
     viewModelOf(::TrainingViewModel)
+    viewModelOf(::ListNewsViewModel)
+    viewModelOf(::TakeTrainingViewModel)
 }

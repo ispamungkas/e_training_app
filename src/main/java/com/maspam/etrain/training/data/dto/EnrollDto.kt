@@ -25,6 +25,12 @@ data class EnrollDto(
     @SerialName("t_jp")
     val totalJp: Int?,
 
+    @SerialName("t_post")
+    val tPost: Boolean? = false,
+
+    @SerialName("t_karya_nyata")
+    val tKaryaNyata: Boolean? = false,
+
     @SerialName("training_detail")
     val trainingDetail: TrainingDto? = TrainingDto(),
 )

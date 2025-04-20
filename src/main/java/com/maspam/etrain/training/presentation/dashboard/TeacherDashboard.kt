@@ -2,6 +2,7 @@ package com.maspam.etrain.training.presentation.dashboard
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.TopBarComponent
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
+import com.maspam.etrain.training.domain.model.NewsModel
 import com.maspam.etrain.training.presentation.dashboard.component.ImageSliderComponent
 import com.maspam.etrain.training.presentation.dashboard.component.LoadingComponent
 import com.maspam.etrain.training.presentation.dashboard.component.ModalTrainingDetailComponent
@@ -52,11 +54,29 @@ fun TeacherDashboardPage(
     navigateToEnrollList: () -> Unit,
     onProfileClicked: () -> Unit,
     navigateToListOpenTraining: () -> Unit,
+    navigateToListNews: () -> Unit,
+    navigateToDetailNews: (NewsModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState()
     var isRefreshing by remember { mutableStateOf(false) }
     val state by dashboardViewModel.state.collectAsStateWithLifecycle()
+
+    state.error?.let {
+        println("error $it")
+        it.ToComposable(
+            isLoading = state.isLoading,
+            navigateToLoginPage = navigateToLoginPage,
+            tryRequestAgain = {
+                dashboardViewModel.apply {
+                    setError(e = null)
+                    getNews()
+                    getOpenTraining()
+                }
+            },
+            onDismiss = { dashboardViewModel.setError(e = null) },
+        )
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -81,22 +101,6 @@ fun TeacherDashboardPage(
                 isRefreshing = false
             }
         }
-
-        state.error?.let {
-            it.ToComposable(
-                isLoading = state.isLoading,
-                navigateToLoginPage = navigateToLoginPage,
-                tryRequestAgain = {
-                    dashboardViewModel.apply {
-                        setError(e = null)
-                        getNews()
-                        getOpenTraining()
-                    }
-                },
-                onDismiss = { dashboardViewModel.setError(e = null) },
-            )
-        }
-
 
         LazyColumn(
             modifier = Modifier
@@ -156,6 +160,10 @@ fun TeacherDashboardPage(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         ),
+                        modifier = Modifier
+                            .clickable {
+                                navigateToListNews()
+                            }
                     )
                 }
             }
@@ -176,6 +184,9 @@ fun TeacherDashboardPage(
                             author = newsItem.author,
                             postDate = newsItem.publishDate,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                                .clickable {
+                                    navigateToDetailNews(newsItem)
+                                }
                         )
                     }
                 } ?: item {

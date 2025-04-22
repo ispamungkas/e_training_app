@@ -16,4 +16,6 @@ data class DashboardState(
 
     val isBottomSheetShow: Boolean? = false,
     val selectedTrain: TrainingModel? = null,
+
+    val isRefresh: Boolean = false
 )

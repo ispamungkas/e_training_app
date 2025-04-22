@@ -1,6 +1,5 @@
 package com.maspam.etrain.training.presentation.taketraining.contentitem
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,29 +15,44 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.composables.icons.lucide.CheckCheck
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Menu
 import com.composables.icons.lucide.Timer
 import com.maspam.etrain.R
+import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.HtmlText
+import com.maspam.etrain.training.domain.model.TopicModel
 
 @Composable
-fun CommonContentPage(modifier: Modifier = Modifier, onMenuClicked : () -> Unit) {
+fun CommonContentPage(
+    modifier: Modifier = Modifier,
+    topicModel: TopicModel,
+    isCheck: Boolean,
+    isLoading: Boolean,
+    markAsCompletedPressed: () -> Unit,
+    onMenuClicked: () -> Unit
+) {
+
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
@@ -49,13 +63,14 @@ fun CommonContentPage(modifier: Modifier = Modifier, onMenuClicked : () -> Unit)
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-
-                    Image(
+                    AsyncImage(
                         alignment = Alignment.TopStart,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(235.dp),
-                        painter = painterResource(R.drawable.news_image_sample),
+                            .height(250.dp),
+                        model = constructUrl(topicModel.topicImage ?: "") ,
+                        error = painterResource(R.drawable.placeholder_image_sample),
+                        placeholder = painterResource(R.drawable.placeholder_image_sample),
                         contentScale = ContentScale.Crop,
                         contentDescription = "Image Content",
                     )
@@ -107,7 +122,7 @@ fun CommonContentPage(modifier: Modifier = Modifier, onMenuClicked : () -> Unit)
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Literacy",
+                                    text = topicModel.name ?: "Topic Name",
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.SemiBold
@@ -123,7 +138,7 @@ fun CommonContentPage(modifier: Modifier = Modifier, onMenuClicked : () -> Unit)
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Text(
-                                        "45 Menit",
+                                        text = "45 Menit",
                                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Medium)
                                     )
                                 }
@@ -133,14 +148,53 @@ fun CommonContentPage(modifier: Modifier = Modifier, onMenuClicked : () -> Unit)
                                     .fillMaxWidth()
                                     .padding(vertical = 15.dp)
                             )
-                            val htmlContent = """
-<h1>How to create <a href="https://medium.com/p/7f7e929152f3">interactive</a> HTML content in compose?</h1>
-""".trimIndent()
+                            val htmlContent = topicModel.content ?: "Topic Content"
                             HtmlText(
                                 modifier = Modifier.fillMaxWidth(),
                                 html = htmlContent
                             )
+
+                            if (!isCheck) {
+                                Box(
+                                    modifier = Modifier
+
+                                        .background(
+                                            Color.Green.copy(alpha = 0.1f),
+                                            shape = RoundedCornerShape(15.dp)
+                                        )
+                                        .align(alignment = Alignment.End)
+                                        .clip(shape = RoundedCornerShape(15.dp))
+                                        .clickable {
+                                            markAsCompletedPressed()
+                                        }
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .padding(horizontal = 20.dp, vertical = 10.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Lucide.CheckCheck,
+                                            tint = Color.Green,
+                                            contentDescription = "Icon Check"
+                                        )
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Text(
+                                            text = "Mark as completed",
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                color = Color.Green,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
+                    }
+                    if (isLoading) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                     }
                 }
             }

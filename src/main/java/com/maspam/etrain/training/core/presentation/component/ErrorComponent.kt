@@ -202,6 +202,42 @@ fun BadRequestDialog(modifier: Modifier = Modifier, onDismissDialog: () -> Unit)
 }
 
 @Composable
+fun InputFailure(modifier: Modifier = Modifier,message: String, onDismissDialog: () -> Unit) {
+    var show by remember { mutableStateOf(true) }
+    if (show) {
+        Dialog(
+            onDismissRequest = onDismissDialog,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = true
+            )
+        ) {
+            Card(
+                modifier = modifier,
+            ) {
+                Column(
+                    modifier = Modifier.padding(30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.danger_display),
+                        contentDescription = stringResource(R.string.bad_request),
+                        modifier = Modifier.size(200.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = message,
+                        overflow = TextOverflow.Clip,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun NotAcceptedDialog(modifier: Modifier = Modifier, onDismissDialog: () -> Unit) {
     var show by remember { mutableStateOf(true) }
     if (show) {

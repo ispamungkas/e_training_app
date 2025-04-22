@@ -19,6 +19,8 @@ fun TrainingDto.toTrainingModel(): TrainingModel {
         totalTaken = this.enrolls?.size,
         due = this.dateline,
         totalJp = this.totalJp,
+        link = this.link,
+        location = this.location,
         sections = this.sections?.map {
             it.toSectionModel()
         },

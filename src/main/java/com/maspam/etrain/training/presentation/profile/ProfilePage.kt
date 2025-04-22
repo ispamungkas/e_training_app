@@ -41,6 +41,7 @@ import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.ShimmerEffect
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
+import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.domain.model.UserModel
 import com.maspam.etrain.training.presentation.profile.component.CardTotalJPComponent
 import com.maspam.etrain.training.presentation.profile.component.MenuProfileComponent
@@ -60,6 +61,19 @@ fun ProfilePage(
 ) {
 
     val state by profileViewModel.state.collectAsStateWithLifecycle()
+
+    state.error?.let {
+        println("error")
+        it.ToComposable(
+            isLoading = state.isLoading,
+            navigateToLoginPage = navigateToLogin,
+            tryRequestAgain = {
+
+            }
+        ) {
+            profileViewModel.setError(e = null)
+        }
+    }
 
     Scaffold(
         modifier = modifier

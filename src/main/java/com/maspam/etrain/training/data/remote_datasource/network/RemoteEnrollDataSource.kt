@@ -72,6 +72,22 @@ class RemoteEnrollDataSource(
         }
     }
 
+    override suspend fun updateAttendance(token: String, enrollId: Int): Result<EnrollModel, NetworkError> {
+        val body = mapOf(
+            "attandence" to true,
+        )
+        return safeCall <BaseDto<EnrollDto>>{
+            httpClient.patch(
+                urlString = constructUrl("/enroll/$enrollId"),
+            ) {
+                bearerAuth(token = token)
+                setBody(body)
+            }
+        }.map { response ->
+            response.data?.toEnrollModel() ?: EnrollModel()
+        }
+    }
+
     override suspend fun updateProgressTraining(
         token: String,
         enrollId: Int,
@@ -83,8 +99,8 @@ class RemoteEnrollDataSource(
             "s_learn" to topic
         )
         return safeCall <BaseDto<EnrollDto>>{
-            httpClient.post(
-                urlString = constructUrl("/enroll/?id=$enrollId"),
+            httpClient.patch(
+                urlString = constructUrl("/enroll/$enrollId"),
             ) {
                 bearerAuth(token = token)
                 setBody(body)
@@ -115,10 +131,11 @@ class RemoteEnrollDataSource(
 
     override suspend fun createCertificate(token: String, userId: Int, enrollId: Int): Result<CertificateModel, NetworkError> {
         val body = mapOf(
-            "t_post" to true,
+            "user" to userId,
+            "enroll" to enrollId
         )
         return safeCall <BaseDto<CertificateDto>>{
-            httpClient.patch(
+            httpClient.post(
                 urlString = constructUrl("/certificate/"),
             ) {
                 bearerAuth(token = token)

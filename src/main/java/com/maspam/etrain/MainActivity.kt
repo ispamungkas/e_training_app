@@ -60,6 +60,7 @@ import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardView
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.ListOpenTrainingViewModel
 import com.maspam.etrain.training.presentation.enroll.DetailEnrollTraining
 import com.maspam.etrain.training.presentation.enroll.ListEnrollTrainingProfilePage
+import com.maspam.etrain.training.presentation.enroll.viewmodel.EnrollViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
 import com.maspam.etrain.training.presentation.news.DetailNewsPage
 import com.maspam.etrain.training.presentation.news.ListNewsPage
@@ -491,6 +492,7 @@ class MainActivity : ComponentActivity() {
                             DetailEnrollTraining(
                                 modifier = Modifier.padding(innerPadding),
                                 enroll = data.enrolModel,
+                                enrollViewModel = koinViewModel<EnrollViewModel>(),
                                 onBackPressed = {
                                     navController.navigateUp()
                                 },

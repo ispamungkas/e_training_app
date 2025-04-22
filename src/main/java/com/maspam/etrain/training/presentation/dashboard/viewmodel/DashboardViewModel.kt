@@ -36,13 +36,13 @@ class DashboardViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
-            DashboardState(isLoading = true),
+            DashboardState(isLoading = true, isRefresh = false),
         )
 
     private val _event = Channel<EventDashboard>()
     val event = _event.receiveAsFlow()
 
-    private fun getUser() {
+    fun getUser() {
         viewModelScope.launch {
             userSessionDataSource.getUserSession()
                 .collect(collector = { data ->
@@ -58,6 +58,7 @@ class DashboardViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefresh = false,
                             error = error
                         )
                     }
@@ -82,6 +83,7 @@ class DashboardViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefresh = false,
                             error = error
                         )
                     }
@@ -91,6 +93,7 @@ class DashboardViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefresh = false,
                             openTrain = result.sortedByDescending { train -> train.id }
                         )
                     }
@@ -136,6 +139,15 @@ class DashboardViewModel(
                 selectedTrain = id?.let { selectedId ->
                     it.openTrain?.first { openTrain -> openTrain.id == selectedId }
                 }
+            )
+        }
+    }
+
+    fun refresh() {
+        _state.update {
+            it.copy(
+                isRefresh = true,
+                isLoading = true
             )
         }
     }

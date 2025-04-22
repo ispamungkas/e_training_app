@@ -104,4 +104,15 @@
     <string name="update_profile_successfully">Pembaharuan profil berhasil</string>
     <string name="enroll">Daftar pelatihan</string>
     <string name="contine">Lanjutkan</string>
+    <string name="post_test_upload_success">Post Test successfully uploaded</string>
+    <string name="input_in_order">Please answer in order</string>
+    <string name="post_test">Post Test</string>
+    <string name="please_choose_the_answer_that_best_suits_your_personality">Please choose the answer that best suits your personality !!!</string>
+    <string name="post_test_opening">"The question is pointed in literacy material, if you has understanding that material you can answer this question easily "</string>
+    <string name="answer">Answer</string>
+    <string name="detail_training">Detail Training</string>
+    <string name="open_training">Open Training</string>
+    <string name="attendance">Attendance :</string>
+    <string name="link">Link :</string>
+    <string name="location">Location :</string>
 </resources>

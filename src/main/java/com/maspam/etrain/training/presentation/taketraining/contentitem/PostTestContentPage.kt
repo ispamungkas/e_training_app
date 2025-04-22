@@ -19,25 +19,66 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.CustomButtonFieldLoad
+import com.maspam.etrain.training.core.presentation.component.InputFailure
+import com.maspam.etrain.training.core.presentation.component.LoadingScreen
+import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarWithStartImage
+import com.maspam.etrain.training.domain.model.PostTestModel
+import com.maspam.etrain.training.domain.model.SectionModel
 
 @Composable
-fun PostTestContentPage(modifier: Modifier = Modifier, onMenuCLicked : () -> Unit) {
+fun PostTestContentPage(
+    modifier: Modifier = Modifier,
+    postTest: List<PostTestModel>,
+    section: List<SectionModel>,
+    listAnswer: List<List<String>?>?,
+    isLoading: Boolean,
+    isSuccess: Boolean,
+    inputFailure: Boolean,
+    onDismissDialog: () -> Unit,
+    onDismissFailureInputDialog: () -> Unit,
+    changeAnswerValue: (Int, Int, String) -> Unit,
+    onSubmit: () -> Unit,
+    onMenuCLicked: () -> Unit
+) {
+
+    if (isSuccess) {
+        SuccessDialog(
+            message = stringResource(R.string.post_test_upload_success),
+            onDismissDialog = onDismissDialog
+        )
+    }
+
+    if (inputFailure) {
+        InputFailure(
+            message = stringResource(R.string.input_in_order)
+        ) {
+            onDismissFailureInputDialog()
+        }
+    }
+
     Scaffold(
         modifier = modifier
             .systemBarsPadding(),
         topBar = {
             TopBarWithStartImage(
-                name = "Post Test"
+                name = stringResource(R.string.post_test)
             ) {
                 onMenuCLicked()
             }
         }
     ) { innerPadding ->
+
+        if (isLoading) {
+            LoadingScreen()
+        }
+
         Box(
             modifier = modifier.fillMaxSize()
         ) {
@@ -57,16 +98,17 @@ fun PostTestContentPage(modifier: Modifier = Modifier, onMenuCLicked : () -> Uni
                         ) {
                             Text(
                                 modifier = Modifier.padding(bottom = 20.dp),
-                                text = "Please choose the answer that best suits your personality !!!",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                                text = stringResource(R.string.please_choose_the_answer_that_best_suits_your_personality),
+                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
                             )
-                            for (i in 1..3) {
+                            postTest.forEachIndexed { index, postTestModel ->
                                 Column(
                                     modifier = Modifier.padding(top = 15.dp)
                                 ) {
                                     Text(
-                                        text = "Literacy",
-                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                                        text = section.first { it.id == postTestModel.section }.name
+                                            ?: "",
+                                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
                                     )
                                     Divider(
                                         thickness = 2.dp,
@@ -75,31 +117,35 @@ fun PostTestContentPage(modifier: Modifier = Modifier, onMenuCLicked : () -> Uni
                                             .padding(vertical = 15.dp)
                                     )
                                     Text(
-                                        text = "The question is pointed in literacy material, if you has understanding that material you can answer this question easily ",
-                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
+                                        text = stringResource(R.string.post_test_opening),
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
                                     )
                                 }
-                                for (e in 1..2) {
+                                postTestModel.question?.forEachIndexed { index2, question ->
                                     Text(
                                         modifier = Modifier.padding(vertical = 15.dp),
-                                        text = "$e. Question number $e ",
-                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
+                                        text = "${index2 + 1}. $question ",
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
                                     )
                                     Text(
                                         modifier = Modifier.padding(start = 10.dp),
-                                        text = "Answer",
-                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
+                                        text = stringResource(R.string.answer),
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
                                     )
                                     TextField(
                                         modifier = Modifier
                                             .padding(vertical = 5.dp)
                                             .fillMaxWidth()
                                             .clip(shape = RoundedCornerShape(15.dp)),
-                                        value = "sddsgnfdsgndsjgndfjsngdjsgdsnjgdnsjgndsjngdsgjdfngjdsnjgfndsjgndjsgndsgjdsngjfdsnjgdnsdsf",
-                                        onValueChange = {
-
+                                        value = try {
+                                            listAnswer?.get(index)?.get(index2) ?: ""
+                                        } catch (e: IndexOutOfBoundsException) {
+                                            ""
                                         },
-                                        textStyle = MaterialTheme.typography.bodySmall.copy(
+                                        onValueChange = { value ->
+                                            changeAnswerValue(index, index2, value)
+                                        },
+                                        textStyle = MaterialTheme.typography.bodyMedium.copy(
                                             fontWeight = FontWeight.Normal,
                                             lineHeight = 20.sp
                                         ),
@@ -112,13 +158,15 @@ fun PostTestContentPage(modifier: Modifier = Modifier, onMenuCLicked : () -> Uni
                 }
             }
             CustomButtonFieldLoad(
-                buttonName = "Submit",
+                buttonName = stringResource(R.string.submit),
                 buttonColor = MaterialTheme.colorScheme.primary,
                 isLoading = false,
                 modifier = Modifier
                     .align(alignment = Alignment.BottomCenter)
                     .padding(horizontal = 20.dp, vertical = 20.dp)
-            ) { }
+            ) {
+                onSubmit()
+            }
         }
 
     }

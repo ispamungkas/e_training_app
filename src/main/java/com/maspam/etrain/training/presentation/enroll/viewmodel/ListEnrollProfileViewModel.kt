@@ -48,6 +48,7 @@ class ListEnrollProfileViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefreshing = false,
                         )
                     }
                     _globalEvent.send(GlobalEvent.Error(e))
@@ -56,6 +57,7 @@ class ListEnrollProfileViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefreshing = false,
                             data = result.sortedByDescending { enroll -> enroll.id },
                             filteredData = result.sortedByDescending { enroll -> enroll.id }
                         )
@@ -84,6 +86,14 @@ class ListEnrollProfileViewModel(
 
     fun setError(e: NetworkError?) {
         _state.update { it.copy(error = e) }
+    }
+
+    fun refresh() {
+        _state.update {
+            it.copy(
+                isRefreshing = true
+            )
+        }
     }
 
 }

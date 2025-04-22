@@ -100,7 +100,7 @@ fun OpenTrainingItemComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = typeTraining ?: stringResource(R.string.type_training),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
                 Row(
@@ -115,7 +115,7 @@ fun OpenTrainingItemComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
             }
@@ -149,7 +149,7 @@ fun OpenTrainingItemComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = typeTrainingCategory ?: stringResource(R.string.implementation),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
                 Row(
@@ -164,7 +164,7 @@ fun OpenTrainingItemComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = totalPerson.toString(),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
                 Box(
@@ -176,7 +176,7 @@ fun OpenTrainingItemComponent(
                         text = if (isOpen == true) stringResource(R.string.open) else stringResource(
                             R.string.close
                         ),
-                        style = MaterialTheme.typography.labelMedium.copy(
+                        style = MaterialTheme.typography.bodySmall.copy(
                             fontWeight = FontWeight.Medium,
                             color = Color.White,
                         ),

@@ -72,7 +72,7 @@ fun MenuProfileComponent(
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium, color = color)
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium, color = color)
                 )
             }
             Icon(

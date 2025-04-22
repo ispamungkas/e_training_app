@@ -72,7 +72,7 @@ fun ListOpenTrainingPage(
             .fillMaxSize(),
         topBar = {
             TopBarWithArrowComponent(
-                section = "Open Training",
+                section = stringResource(R.string.open_training),
                 onBackPress = onBackPressed
             )
         }

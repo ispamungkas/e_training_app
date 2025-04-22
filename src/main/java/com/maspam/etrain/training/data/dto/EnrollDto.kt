@@ -18,7 +18,7 @@ data class EnrollDto(
 
     @SerialName("s_learn")
     val sLearn: Int? = 0,
-    val attendance: Boolean? = false,
+    val attandence: Boolean? = false,
     val certificate: List<CertificateDto>? = null,
     val karyanyata: List<KaryaNyataDto>? = null,
 

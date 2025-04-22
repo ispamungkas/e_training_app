@@ -7,12 +7,14 @@ import com.maspam.etrain.training.data.remote_datasource.network.RemoteAuthentic
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteEnrollDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteKaryaNyataDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteNewsDataSource
+import com.maspam.etrain.training.data.remote_datasource.network.RemotePostTestDataSource
 import com.maspam.etrain.training.data.remote_datasource.network.RemoteTrainingDataSource
 import com.maspam.etrain.training.domain.datasource.local.proto.UserSessionDataSource
 import com.maspam.etrain.training.domain.datasource.network.AuthenticationDataSource
 import com.maspam.etrain.training.domain.datasource.network.EnrollDataSource
 import com.maspam.etrain.training.domain.datasource.network.KaryaNyataDataSource
 import com.maspam.etrain.training.domain.datasource.network.NewsDataSource
+import com.maspam.etrain.training.domain.datasource.network.PostTestDataSource
 import com.maspam.etrain.training.domain.datasource.network.TrainingDataSource
 import com.maspam.etrain.training.presentation.authentication.viewmodel.AuthenticationViewModel
 import com.maspam.etrain.training.presentation.authentication.viewmodel.ChangePasswordViewModel
@@ -20,6 +22,7 @@ import com.maspam.etrain.training.presentation.authentication.viewmodel.ForgotPa
 import com.maspam.etrain.training.presentation.authentication.viewmodel.OTPViewModel
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardViewModel
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.ListOpenTrainingViewModel
+import com.maspam.etrain.training.presentation.enroll.viewmodel.EnrollViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
 import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.ProfileViewModel
@@ -46,6 +49,7 @@ val appModule = module {
     singleOf(::RemoteNewsDataSource).bind<NewsDataSource>()
     singleOf(::RemoteEnrollDataSource).bind<EnrollDataSource>()
     singleOf(::RemoteKaryaNyataDataSource).bind<KaryaNyataDataSource>()
+    singleOf(::RemotePostTestDataSource).bind<PostTestDataSource>()
 
     viewModelOf(::OTPViewModel)
     viewModelOf(::ForgotPasswordViewModel)
@@ -57,6 +61,7 @@ val appModule = module {
     viewModelOf(::UpdatePasswordProfileViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::ListEnrollProfileViewModel)
+    viewModelOf(::EnrollViewModel)
     viewModelOf(::TrainingViewModel)
     viewModelOf(::ListNewsViewModel)
     viewModelOf(::TakeTrainingViewModel)

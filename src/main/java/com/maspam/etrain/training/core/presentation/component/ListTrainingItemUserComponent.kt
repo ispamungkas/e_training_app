@@ -103,7 +103,7 @@ fun ListEnrollTrainingComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = typeTraining ?: stringResource(R.string.type_training),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
                 Row(
@@ -118,7 +118,7 @@ fun ListEnrollTrainingComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
             }
@@ -128,7 +128,7 @@ fun ListEnrollTrainingComponent(
                     .fillMaxWidth()
                     .weight(0.3f),
                 text = nameTraining ?: stringResource(R.string.name_training),
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -152,7 +152,7 @@ fun ListEnrollTrainingComponent(
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = typeTrainingCategory ?: stringResource(R.string.implementation),
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
                 Box(
@@ -162,7 +162,7 @@ fun ListEnrollTrainingComponent(
                 ) {
                     Text(
                         text = statusToStringRes(status ?: ""),
-                        style = MaterialTheme.typography.labelMedium.copy(
+                        style = MaterialTheme.typography.bodySmall.copy(
                             fontWeight = FontWeight.Medium,
                             color = Color.White,
                         ),

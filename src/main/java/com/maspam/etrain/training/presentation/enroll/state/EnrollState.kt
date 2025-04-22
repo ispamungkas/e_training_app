@@ -1,15 +1,14 @@
 package com.maspam.etrain.training.presentation.enroll.state
 
-import androidx.compose.runtime.Immutable
 import com.maspam.etrain.training.core.domain.utils.NetworkError
+import com.maspam.etrain.training.domain.model.CertificateModel
 import com.maspam.etrain.training.domain.model.EnrollModel
 
-@Immutable
-data class ListEnrollProfileState(
+data class EnrollState(
     val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
+    val downloadSuccess: Boolean = false,
     val error: NetworkError? = null,
-    val data: List<EnrollModel>? = null,
-    val filteredData: List<EnrollModel>? = data,
-
-    val isRefreshing: Boolean = false
+    var data: EnrollModel? = null,
+    val certificate: CertificateModel? = null
 )

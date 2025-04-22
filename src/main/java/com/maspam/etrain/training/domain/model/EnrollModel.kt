@@ -12,9 +12,12 @@ data class EnrollModel(
     val sLearn: Int? = 0,
     val pLearn: Int? = 0,
     val tPost : Boolean? = false,
-    val tKaryaNyata: Boolean? = false,
     val certificate: CertificateModel? = null,
     val karyaNyataModel: KaryaNyataModel? = null,
     val totalJp: Int? = 0,
+    val tKaryaNyata: Boolean? = karyaNyataModel?.let {
+        it.status == "accepted" || it.status == "pending"
+    } ?: false,
+
     val trainingDetail: TrainingModel? = null,
 )

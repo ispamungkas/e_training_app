@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import com.maspam.etrain.training.presentation.dashboard.component.LoadingCompon
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListEnrollTrainingProfilePage(
     listEnrollProfileViewModel: ListEnrollProfileViewModel,
@@ -65,6 +68,10 @@ fun ListEnrollTrainingProfilePage(
         }
     }
 
+    if (state.isRefreshing) {
+        listEnrollProfileViewModel.getEnroll()
+    }
+
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
@@ -75,57 +82,64 @@ fun ListEnrollTrainingProfilePage(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            contentPadding = PaddingValues(top = 10.dp, bottom = 30.dp),
-            modifier = Modifier
-                .padding(innerPadding)
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = {
+                listEnrollProfileViewModel.refresh()
+            },
         ) {
-            item {
-                FilterListComponent(
-                    filters = listOf(
-                        "All", "Progress", "Time out", "Completed", "Need action"
-                    ),
-                    onSelected = { filter ->
-                        listEnrollProfileViewModel.setFilter(filter)
-                    }
-                )
-            }
-
-            if (state.isLoading) {
-                items(5) {
-                    LoadingComponent(
-                        size = 100.dp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                contentPadding = PaddingValues(top = 10.dp, bottom = 30.dp),
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                item {
+                    FilterListComponent(
+                        filters = listOf(
+                            "All", "Progress", "Time out", "Completed", "Need action"
+                        ),
+                        onSelected = { filter ->
+                            listEnrollProfileViewModel.setFilter(filter)
+                        }
                     )
                 }
-            } else {
-                state.filteredData?.let {
-                    items(it, key = { enrollData -> enrollData.id ?: 0 }) { enrollData ->
-                        ListEnrollTrainingComponent(
-                            modifier = Modifier.fillMaxWidth(),
-                            data = enrollData,
-                            id = enrollData.id,
-                            typeTraining = enrollData.trainingDetail?.typeTraining,
-                            status = enrollData.status,
-                            typeTrainingCategory = enrollData.trainingDetail?.typeTrainingCategory,
-                            nameTraining = enrollData.trainingDetail?.name,
-                            due = enrollData.outDate,
-                            imageUri = enrollData.trainingDetail?.image,
-                            onItemClick = onItemClick
+
+                if (state.isLoading) {
+                    items(5) {
+                        LoadingComponent(
+                            size = 100.dp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp)
                         )
                     }
-                } ?: item {
-                    Text(
-                        text = "Doen't have any enroll training",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp)
-                    )
+                } else {
+                    state.filteredData?.let {
+                        items(it, key = { enrollData -> enrollData.id ?: 0 }) { enrollData ->
+                            ListEnrollTrainingComponent(
+                                modifier = Modifier.fillMaxWidth(),
+                                data = enrollData,
+                                id = enrollData.id,
+                                typeTraining = enrollData.trainingDetail?.typeTraining,
+                                status = enrollData.status,
+                                typeTrainingCategory = enrollData.trainingDetail?.typeTrainingCategory,
+                                nameTraining = enrollData.trainingDetail?.name,
+                                due = enrollData.outDate,
+                                imageUri = enrollData.trainingDetail?.image,
+                                onItemClick = onItemClick
+                            )
+                        }
+                    } ?: item {
+                        Text(
+                            text = "Doen't have any enroll training",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp)
+                        )
+                    }
                 }
             }
         }

@@ -14,7 +14,7 @@ fun EnrollDto.toEnrollModel(): EnrollModel {
         status = this.status,
         totalJp = this.totalJp,
         outDate = this.outDate,
-        attandance = this.attendance,
+        attandance = this.attandence,
         tPost = this.tPost,
         tKaryaNyata = this.tKaryaNyata,
         certificate = if(this.certificate?.isEmpty() == true) CertificateModel() else this.certificate?.first()?.toCertificateModel(),

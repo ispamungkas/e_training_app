@@ -14,7 +14,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,22 +51,22 @@ fun SuperUserDashboardPage(
         val pullToRefreshState = rememberPullToRefreshState()
         val context = LocalContext.current
 
-        if (pullToRefreshState.isRefreshing) {
-            LaunchedEffect(true) {
-                isRefreshing = true
-            }
-        }
-
-        LaunchedEffect(
-            isRefreshing
-        ) {
-            if (isRefreshing) {
-                pullToRefreshState.startRefresh()
-            } else {
-                pullToRefreshState.endRefresh()
-                isRefreshing = false
-            }
-        }
+//        if (pullToRefreshState.isRefreshing) {
+//            LaunchedEffect(true) {
+//                isRefreshing = true
+//            }
+//        }
+//
+//        LaunchedEffect(
+//            isRefreshing
+//        ) {
+//            if (isRefreshing) {
+//                pullToRefreshState.startRefresh()
+//            } else {
+//                pullToRefreshState.endRefresh()
+//                isRefreshing = false
+//            }
+//        }
 
         Column(
             modifier = Modifier

@@ -99,12 +99,13 @@ fun ModalTrainingDetailComponent(
                 Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(R.drawable.icon_category),
-                    contentDescription = "Icon Category"
+                    contentDescription = "Icon Category",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = typeTraining ?: stringResource(R.string.type_training),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                 )
             }
             Row(
@@ -113,12 +114,13 @@ fun ModalTrainingDetailComponent(
                 Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(R.drawable.icon_time),
-                    contentDescription = "Icon Time"
+                    contentDescription = "Icon Time",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                 )
             }
             Box(
@@ -129,7 +131,7 @@ fun ModalTrainingDetailComponent(
                 Text(
                     modifier = Modifier.padding(horizontal = 35.dp, vertical = 3.dp),
                     text = if (isOpen == true) stringResource(R.string.open) else stringResource(R.string.close),
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -145,7 +147,7 @@ fun ModalTrainingDetailComponent(
             text = trainingName ?: stringResource(R.string.name_training),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium)
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
         )
 
         Row(
@@ -159,12 +161,13 @@ fun ModalTrainingDetailComponent(
                 Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(R.drawable.icon_location),
-                    contentDescription = "Icon Location"
+                    contentDescription = "Icon Location",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = typeTrainingAtt ?: stringResource(R.string.implementation),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                 )
             }
             Row(
@@ -173,12 +176,13 @@ fun ModalTrainingDetailComponent(
                 Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(R.drawable.icon_person),
-                    contentDescription = "Icon Person"
+                    contentDescription = "Icon Person",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = totalTaken.toString(),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                 )
             }
             Row(
@@ -187,12 +191,13 @@ fun ModalTrainingDetailComponent(
                 Icon(
                     modifier = Modifier.size(12.dp),
                     painter = painterResource(R.drawable.icon_time_reverse),
-                    contentDescription = "Icon JP"
+                    contentDescription = "Icon JP",
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = "${totalJP} JP",
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light)
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                 )
             }
         }
@@ -201,25 +206,25 @@ fun ModalTrainingDetailComponent(
 
         Text(
             text = stringResource(R.string.description),
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
         ExpandableText(
             text = description ?: "${stringResource(R.string.description)} Training",
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal),
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal, color = MaterialTheme.colorScheme.onBackground),
             collapsedMaxLine = 6,
             showMoreText = "... ${stringResource(R.string.see_more)}",
             showMoreStyle = SpanStyle(
-                color = MaterialTheme.colorScheme.outline,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
                 fontFamily = poppinsFontFamily
             ),
             showLessText = stringResource(R.string.see_less),
             showLessStyle = SpanStyle(
-                color = MaterialTheme.colorScheme.outline,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
                 fontFamily = poppinsFontFamily
@@ -230,13 +235,12 @@ fun ModalTrainingDetailComponent(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 15.dp),
             text = stringResource(R.string.are_you_sure_want_to_take_this_training),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center
         )
-
-        Spacer(modifier = Modifier.height(10.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),

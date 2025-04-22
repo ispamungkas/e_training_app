@@ -10,6 +10,8 @@ data class TrainingModel(
     val typeTraining: String? = "",
     val typeTrainingCategory: String? = "",
     val isOpen: Boolean? = false,
+    val link: String? = "",
+    val location: String? = "",
     val desc: String? = "",
     val totalTaken: Int? = 0,
     val due: Long? = 0L,

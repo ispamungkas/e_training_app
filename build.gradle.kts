@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://c3ac-180-254-76-238.ngrok-free.app/\"")
+            buildConfigField("String", "BASE_URL", "\"https://a2a2-180-254-76-238.ngrok-free.app/\"")
         }
         release {
             isMinifyEnabled = false
@@ -80,6 +80,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.compose.foundation:foundation:1.0.0")
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc12")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

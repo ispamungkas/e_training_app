@@ -16,7 +16,7 @@ fun BaseDtoUser<UserDto>.toUserModel(): UserModel {
         nip = this.data?.nip,
         lastEducation = this.data?.lEducation,
         currentSchool = this.data?.cSchool,
-        isHead = this.data?.role.toBoolean(),
+        role = this.data?.role,
         imageProfile = this.data?.imgProfile,
     )
 }
@@ -33,7 +33,7 @@ fun UserDto.toUserModel(): UserModel {
         lastEducation = this.lEducation,
         currentSchool = this.cSchool,
         dayOfBirth = this.dob,
-        isHead = this.role.toBoolean(),
+        role = this.role,
         imageProfile = this.imgProfile,
     )
 }

@@ -104,4 +104,9 @@
     <string name="welcome_word">Login Successfull. Welcome back</string>
     <string name="update_profile_successfully">Update profile successfully</string>
     <string name="enroll">Enroll</string>
+    <string name="add">Add</string>
+    <string name="publish">Publish</string>
+    <string name="material_section">Material Section</string>
+    <string name="input_the">Input the %1$s</string>
+    <string name="unpublish">Unpublish</string>
 </resources>

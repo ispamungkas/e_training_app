@@ -27,6 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.composables.icons.lucide.Globe
+import com.composables.icons.lucide.Lucide
 import com.maspam.etrain.R
 import com.maspam.etrain.training.domain.model.TrainingModel
 
@@ -56,7 +58,7 @@ fun OpenTrainingComponent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(R.drawable.icon_training),
+                    imageVector = Lucide.Globe,
                     contentDescription = "Icon Training",
                     modifier = Modifier.size(24.dp)
                 )

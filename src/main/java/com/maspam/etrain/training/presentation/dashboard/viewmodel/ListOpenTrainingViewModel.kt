@@ -44,7 +44,6 @@ class ListOpenTrainingViewModel(
         viewModelScope.launch {
             trainingDataSource.getOpenTraining(
                 token = userSessionDataSource.getToken(),
-                isPublish = false
             )
                 .onError { error ->
                     _state.update {

@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = TeacherDashboardScreen
+                        startDestination = LoginScreen
                     ) {
                         composable<LoginScreen> {
                             LoginPage(
@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
                                                 inclusive = true
                                             }
                                         }
-                                    } else if (userModel.isHead == true) {
+                                    } else if (userModel.role == "Head School") {
                                         navController.navigate(HeadSchoolDashboardScreen) {
                                             popUpTo(LoginScreen) {
                                                 inclusive = true

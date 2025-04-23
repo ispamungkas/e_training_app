@@ -77,7 +77,7 @@ class DashboardViewModel(
         viewModelScope.launch {
             trainingDataSource.getOpenTraining(
                 token = userSessionDataSource.getToken(),
-                isPublish = false
+                isOpen = false
             )
                 .onError { error ->
                     _state.update {

@@ -115,4 +115,11 @@
     <string name="attendance">Attendance :</string>
     <string name="link">Link :</string>
     <string name="location">Location :</string>
+    <string name="materi">Materi</string>
+    <string name="empty">Empty</string>
+    <string name="narasumber">Narasumber : -</string>
+    <string name="section_berhasil_terupdate">Section berhasil terupdate</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="are_you_sure_you_want_to_take_this_post_test">Are you sure you want to take this post test?</string>
+    <string name="input_total_jp">Masukan total jp</string>
 </resources>

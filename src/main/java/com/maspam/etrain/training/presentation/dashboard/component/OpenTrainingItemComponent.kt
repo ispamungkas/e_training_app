@@ -30,6 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.composables.icons.lucide.LocateFixed
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.TimerReset
+import com.composables.icons.lucide.User
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.utils.toDateTimeFormatter
@@ -108,7 +112,7 @@ fun OpenTrainingItemComponent(
                 ) {
                     Icon(
                         modifier = Modifier.size(12.dp),
-                        painter = painterResource(R.drawable.icon_time),
+                        imageVector = Lucide.TimerReset,
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = "Icon Category"
                     )
@@ -142,7 +146,7 @@ fun OpenTrainingItemComponent(
                 ) {
                     Icon(
                         modifier = Modifier.size(12.dp),
-                        painter = painterResource(R.drawable.icon_location),
+                        imageVector = Lucide.LocateFixed,
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = "Icon Location"
                     )
@@ -157,7 +161,7 @@ fun OpenTrainingItemComponent(
                 ) {
                     Icon(
                         modifier = Modifier.size(12.dp),
-                        painter = painterResource(R.drawable.icon_person),
+                        imageVector = Lucide.User,
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = "Icon Person"
                     )

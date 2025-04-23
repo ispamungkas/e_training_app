@@ -20,6 +20,7 @@ fun TrainingDto.toTrainingModel(): TrainingModel {
         due = this.dateline,
         totalJp = this.totalJp,
         link = this.link,
+        isPublish = this.isPublish,
         location = this.location,
         sections = this.sections?.map {
             it.toSectionModel()

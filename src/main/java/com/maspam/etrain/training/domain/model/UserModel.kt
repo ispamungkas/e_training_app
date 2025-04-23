@@ -13,9 +13,9 @@ data class UserModel(
     val address: String? = null,
     val phoneNumber: String? = null,
     val gender: String? = null,
+    val role: String? = null,
     val lastEducation: String? = null,
     val currentSchool: String? = null,
-    val isHead: Boolean? = null,
     val dayOfBirth: Long? = null,
     val imageProfile: String? = null,
 )

@@ -29,12 +29,12 @@ fun ConfirmationBottomSheetComponent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Confirmation",
+            text = stringResource(R.string.confirmation),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
         )
         Text(
             modifier = Modifier.padding(vertical = 15.dp),
-            text = "Are you sure you want to take this post test?",
+            text = stringResource(R.string.are_you_sure_you_want_to_take_this_post_test),
             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
         )
         Row(

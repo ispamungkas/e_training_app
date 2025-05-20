@@ -57,3 +57,47 @@ fun ConfirmationBottomSheetComponent(
         }
     }
 }
+
+@Composable
+fun ConfirmationBottomSheetFlexComponent(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    message: String,
+    onDismiss: () -> Unit,
+    onSubmit: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, bottom = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.confirmation),
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+        )
+        Text(
+            modifier = Modifier.padding(vertical = 20.dp),
+            text = message,
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            CustomButtonField(
+                modifier = Modifier.weight(0.5f),
+                buttonName = stringResource(R.string.cancel),
+                buttonColor = MaterialTheme.colorScheme.error,
+                onClick = onDismiss
+            )
+            CustomButtonFieldLoad(
+                modifier = Modifier.weight(0.5f),
+                buttonName = stringResource(R.string.submit),
+                buttonColor = MaterialTheme.colorScheme.primary,
+                isLoading = isLoading,
+                onClick = onSubmit
+            )
+        }
+    }
+}

@@ -76,9 +76,12 @@ fun RegisterPage(
     if (state.isSuccess == true) {
         SuccessDialog(
             message = stringResource(R.string.register_success_word),
-            onDismissDialog = onRegisterSuccess
+            onDismissDialog = {
+                authenticationViewModel.setSuccess(value = false)
+                onRegisterSuccess()
+            }
         )
-        authenticationViewModel.setSuccess(value = false)
+
     }
 
     Box(

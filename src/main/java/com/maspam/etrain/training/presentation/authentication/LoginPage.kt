@@ -52,7 +52,6 @@ fun LoginPage(
         }
     }
 
-    // Show error if had
     state.errorResult?.ToComposable(
         navigateToLoginPage = navigateToLogin,
         tryRequestAgain = {},

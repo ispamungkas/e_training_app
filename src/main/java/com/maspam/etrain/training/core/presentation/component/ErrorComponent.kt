@@ -356,6 +356,54 @@ fun SuccessDialog(message: String, modifier: Modifier = Modifier, onDismissDialo
     }
 }
 
+
+@Composable
+fun UnVerifyDialog(message: String, modifier: Modifier = Modifier, onDismissDialog: () -> Unit) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
+    var play by remember { mutableStateOf(true) }
+
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        isPlaying = play
+    )
+
+    LaunchedEffect(key1 = progress) {
+        if (progress == 1f) {
+            play = false
+        }
+    }
+
+    Dialog(
+        onDismissRequest = onDismissDialog,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = true
+        )
+    ) {
+        Card(
+            modifier = modifier
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 30.dp,
+                        vertical = 30.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                LottieAnimation(composition = composition, modifier = Modifier.size(150.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+}
+
 @Composable
 fun Componentz(modifier: Modifier = Modifier) {
     Card(

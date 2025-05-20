@@ -57,7 +57,7 @@ class ListOpenTrainingViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            data = result.sortedByDescending { train -> train.id }
+                            data = result.sortedByDescending { train -> train.id }.filter { data -> !userSessionDataSource.getUserSession().enroll.contains(data.id) && data.isOpen == true && data.isPublish == true}
                         )
                     }
                 }

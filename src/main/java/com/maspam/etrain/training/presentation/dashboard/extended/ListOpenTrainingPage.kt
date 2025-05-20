@@ -87,32 +87,60 @@ fun ListOpenTrainingPage(
                     LoadingComponent(size = 100.dp, modifier = Modifier.fillMaxWidth())
                 }
             } else {
-                state.data?.let {
-                   items(items = it, key = { x -> x.id ?: 0 }) { training ->
-                       OpenTrainingItemComponent(
-                           modifier = Modifier.fillMaxWidth(),
-                           id = training.id,
-                           isOpen = training.isOpen,
-                           nameTraining = training.name,
-                           typeTraining = training.typeTraining,
-                           due = training.due,
-                           typeTrainingCategory = training.typeTrainingCategory,
-                           imageUri = training.image,
-                           totalPerson = training.totalTaken,
-                           onItemClick = {
-                               listOpenTrainingViewModel.setModalBottomSheetState(value = true, it)
-                           }
-                       )
-                   }
-
-                } ?: item {
-                    Text(
-                        text = stringResource(R.string.no_training_has_open),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
+                if (!state.data.isNullOrEmpty()) {
+                    items(items = state.data ?: emptyList(), key = { x -> x.id ?: 0 }) { training ->
+                        OpenTrainingItemComponent(
+                            modifier = Modifier.fillMaxWidth(),
+                            id = training.id,
+                            isOpen = training.isOpen,
+                            nameTraining = training.name,
+                            typeTraining = training.typeTraining,
+                            due = training.due,
+                            typeTrainingCategory = training.typeTrainingCategory,
+                            imageUri = training.image,
+                            totalPerson = training.totalTaken,
+                            onItemClick = {
+                                listOpenTrainingViewModel.setModalBottomSheetState(value = true, it)
+                            }
+                        )
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = stringResource(R.string.no_training_has_open),
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
+
+//                state.data?.let {
+//                   items(items = it, key = { x -> x.id ?: 0 }) { training ->
+//                       OpenTrainingItemComponent(
+//                           modifier = Modifier.fillMaxWidth(),
+//                           id = training.id,
+//                           isOpen = training.isOpen,
+//                           nameTraining = training.name,
+//                           typeTraining = training.typeTraining,
+//                           due = training.due,
+//                           typeTrainingCategory = training.typeTrainingCategory,
+//                           imageUri = training.image,
+//                           totalPerson = training.totalTaken,
+//                           onItemClick = {
+//                               listOpenTrainingViewModel.setModalBottomSheetState(value = true, it)
+//                           }
+//                       )
+//                   }
+//
+//                } ?: item {
+//                    Text(
+//                        text = stringResource(R.string.no_training_has_open),
+//                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Normal),
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
             }
         }
 

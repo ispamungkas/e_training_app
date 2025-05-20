@@ -72,6 +72,36 @@ class RemoteEnrollDataSource(
         }
     }
 
+    override suspend fun getDetailEnroll(
+        token: String,
+        enrollId: Int
+    ): Result<EnrollModel, NetworkError> {
+        return safeCall <BaseDto<EnrollDto>>{
+            httpClient.get(
+                urlString = constructUrl("/enroll/?id=$enrollId")
+            ) {
+                bearerAuth(token = token)
+            }
+        }.map { response ->
+            response.data?.toEnrollModel() ?: EnrollModel()
+        }
+    }
+
+    override suspend fun getEnrollByEnrollId(
+        token: String,
+        enrollId: Int
+    ): Result<EnrollModel, NetworkError> {
+        return safeCall <BaseDto<EnrollDto>>{
+            httpClient.get(
+                urlString = constructUrl("/enroll/?id=$enrollId")
+            ) {
+                bearerAuth(token = token)
+            }
+        }.map { response ->
+            response.data?.toEnrollModel() ?: EnrollModel()
+        }
+    }
+
     override suspend fun updateAttendance(token: String, enrollId: Int): Result<EnrollModel, NetworkError> {
         val body = mapOf(
             "attandence" to true,
@@ -143,6 +173,25 @@ class RemoteEnrollDataSource(
             }
         }.map { response ->
             response.data?.toCertificateModel() ?: CertificateModel()
+        }
+    }
+
+    override suspend fun checkCertificate(
+        token: String,
+        value: String
+    ): Result<String, NetworkError> {
+        val body = mapOf(
+            "check" to value,
+        )
+        return safeCall <BaseDto<String>>{
+            httpClient.post(
+                urlString = constructUrl("/certificate/verification"),
+            ) {
+                bearerAuth(token = token)
+                setBody(body)
+            }
+        }.map { response ->
+            response.message ?: ""
         }
     }
 }

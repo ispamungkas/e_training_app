@@ -18,6 +18,7 @@ fun BaseDtoUser<UserDto>.toUserModel(): UserModel {
         currentSchool = this.data?.cSchool,
         role = this.data?.role,
         imageProfile = this.data?.imgProfile,
+        enrolls = this.data?.enrolls?.map { it.toEnrollModel() }
     )
 }
 

@@ -37,5 +37,7 @@ fun KaryaNyataDto.toKaryaNyataModel(): KaryaNyataModel {
         id = this.id,
         status = this.status,
         att = this.att,
+        user = this.user,
+        enroll = this.enroll
     )
 }

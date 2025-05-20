@@ -62,8 +62,9 @@ class UpdateDataProfileViewModel(
                 }
                 .onSuccess {
                     _state.update { it.copy(
-                        isLoading = true
+                        isLoading = false
                     ) }
+                    userSessionDataSource.updateProfile(data = it)
                     _event.send(
                         UserDataProfileEvent.Success
                     )

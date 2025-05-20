@@ -31,6 +31,7 @@ class RemoteAuthenticationDataSource(
     private val httpClient: HttpClient,
     private val fileReader: FileReader
 ): AuthenticationDataSource {
+
     override suspend fun login(nip: String, password: String): Result<UserModel, NetworkError> {
         val body = mapOf(
             "nip" to nip,
@@ -45,7 +46,7 @@ class RemoteAuthenticationDataSource(
                 setBody(body)
             }
         }.map { response ->
-            println("response ${response.token}")
+            println("coba cek $response")
             response.toUserModel()
         }
     }
@@ -124,7 +125,7 @@ class RemoteAuthenticationDataSource(
         token: String,
         data: UpdateDataProfileState,
         id: Int
-    ): Result<String, NetworkError> {
+    ): Result<UserModel, NetworkError> {
         val info = data.profileImage?.let { fileReader.uriToFileInfo(it) }
 
         return safeCall <BaseDto<UserDto>>{
@@ -152,7 +153,7 @@ class RemoteAuthenticationDataSource(
                 ))
             }
         }.map { response ->
-            response.message ?: ""
+            response.data?.toUserModel() ?: UserModel()
         }
     }
 
@@ -163,6 +164,16 @@ class RemoteAuthenticationDataSource(
             )
         }.map { response ->
             response.data?.toUserModel() ?: UserModel()
+        }
+    }
+
+    override suspend fun getAllUser(): Result<List<UserModel>, NetworkError> {
+        return safeCall <BaseDto<List<UserDto>>>{
+            httpClient.get(
+                urlString = constructUrl("/login/")
+            )
+        }.map { response ->
+            response.data?.map { it.toUserModel() } ?: emptyList()
         }
     }
 }

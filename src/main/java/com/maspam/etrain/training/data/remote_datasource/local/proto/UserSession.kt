@@ -8,5 +8,7 @@ data class UserSession(
     val id: Int? = null,
     val nip: String? = "",
     val role: String? = "",
-    val name: String? = ""
+    val name: String? = "",
+    val image: String? = "",
+    val enroll: List<Int> = emptyList()
 )

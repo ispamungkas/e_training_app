@@ -11,6 +11,7 @@ interface AuthenticationDataSource {
     suspend fun generateOtp(nip: String): Result<String, NetworkError>
     suspend fun verifyOtp(otp: String): Result<String, NetworkError>
     suspend fun changePassword(nip: String, newPassword: String): Result<UserModel, NetworkError>
-    suspend fun changeDataProfile(token: String, data: UpdateDataProfileState, id: Int): Result<String, NetworkError>
+    suspend fun changeDataProfile(token: String, data: UpdateDataProfileState, id: Int): Result<UserModel, NetworkError>
     suspend fun getUser(id: Int): Result<UserModel, NetworkError>
+    suspend fun getAllUser(): Result<List<UserModel>, NetworkError>
 }

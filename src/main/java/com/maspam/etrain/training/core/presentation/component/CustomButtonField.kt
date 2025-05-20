@@ -1,5 +1,7 @@
 package com.maspam.etrain.training.core.presentation.component
 
+import androidx.compose.foundation.MarqueeAnimationMode
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,12 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maspam.etrain.R
 
 @Composable
-fun CustomButtonFieldLoad(isEnable: Boolean = true, modifier: Modifier = Modifier, buttonName: String, buttonColor: Color = MaterialTheme.colorScheme.primary,  isLoading: Boolean = false, onClick: () -> Unit) {
+fun CustomButtonFieldLoad(
+    isEnable: Boolean = true,
+    modifier: Modifier = Modifier,
+    buttonName: String,
+    buttonColor: Color = MaterialTheme.colorScheme.primary,
+    isLoading: Boolean = false,
+    onClick: () -> Unit
+) {
     FilledIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = buttonColor
@@ -31,7 +39,7 @@ fun CustomButtonFieldLoad(isEnable: Boolean = true, modifier: Modifier = Modifie
         onClick = onClick,
     ) {
         Text(
-            text = if (isLoading) stringResource(R.string.loading) else buttonName ,
+            text = if (isLoading) stringResource(R.string.loading) else buttonName,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -41,7 +49,13 @@ fun CustomButtonFieldLoad(isEnable: Boolean = true, modifier: Modifier = Modifie
 }
 
 @Composable
-fun CustomButtonFieldLoad2(isEnable: Boolean = true, modifier: Modifier = Modifier, buttonName: String, isLoading: Boolean = false, onClick: () -> Unit) {
+fun CustomButtonFieldLoad2(
+    isEnable: Boolean = true,
+    modifier: Modifier = Modifier,
+    buttonName: String,
+    isLoading: Boolean = false,
+    onClick: () -> Unit
+) {
     FilledIconButton(
         modifier = modifier
             .fillMaxWidth()
@@ -52,7 +66,7 @@ fun CustomButtonFieldLoad2(isEnable: Boolean = true, modifier: Modifier = Modifi
         onClick = onClick,
     ) {
         Text(
-            text = if (isLoading) stringResource(R.string.loading) else buttonName ,
+            text = if (isLoading) stringResource(R.string.loading) else buttonName,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -62,7 +76,12 @@ fun CustomButtonFieldLoad2(isEnable: Boolean = true, modifier: Modifier = Modifi
 }
 
 @Composable
-fun CustomButtonField(modifier: Modifier = Modifier, buttonName: String, buttonColor: Color, onClick: () -> Unit) {
+fun CustomButtonField(
+    modifier: Modifier = Modifier,
+    buttonName: String,
+    buttonColor: Color,
+    onClick: () -> Unit
+) {
     FilledIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = buttonColor
@@ -75,7 +94,7 @@ fun CustomButtonField(modifier: Modifier = Modifier, buttonName: String, buttonC
         onClick = onClick,
     ) {
         Text(
-            text = buttonName ,
+            text = buttonName,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -84,11 +103,33 @@ fun CustomButtonField(modifier: Modifier = Modifier, buttonName: String, buttonC
     }
 }
 
-@Preview
 @Composable
-private fun Check() {
-    CustomButtonField(
-        buttonColor = Color.Black,
-        buttonName = "sef"
-    ) { }
+fun CustomRunningTextButton(
+    modifier: Modifier = Modifier,
+    buttonName: String,
+    buttonColor: Color,
+    onClick: () -> Unit
+) {
+    FilledIconButton(
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = buttonColor
+        ),
+        modifier = modifier
+            .bounceClick(),
+        shape = RoundedCornerShape(100),
+        onClick = onClick,
+    ) {
+        Text(
+            text = buttonName,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            modifier = Modifier
+                .basicMarquee(
+                animationMode = MarqueeAnimationMode.Immediately,
+                repeatDelayMillis = 1000
+            )
+        )
+    }
 }

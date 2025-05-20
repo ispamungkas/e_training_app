@@ -63,7 +63,6 @@ fun ProfilePage(
     val state by profileViewModel.state.collectAsStateWithLifecycle()
 
     state.error?.let {
-        println("error")
         it.ToComposable(
             isLoading = state.isLoading,
             navigateToLoginPage = navigateToLogin,

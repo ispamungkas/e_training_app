@@ -212,7 +212,7 @@ fun ChangeDataProfilePage(
             // Date Picker
             DatePickerField(
                 label = stringResource(R.string.day_of_birth),
-                value = convertMillisToDate(userModel?.dayOfBirth ?: 0),
+                value = (state.dayOfBirth ?: userModel?.dayOfBirth)?.let { convertMillisToDate(it) },
                 onCLick = { datePickerIsOpen = true },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -10,3 +10,9 @@ data class SectionBody(
     @SerialName("train_id")
     val trainId: Int
 )
+
+@Serializable
+data class UpdateSectionBody(
+    val name: String,
+    val jp: Int,
+)

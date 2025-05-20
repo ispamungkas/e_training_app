@@ -16,6 +16,7 @@ data class TrainingModel(
     val desc: String? = "",
     val totalTaken: Int? = 0,
     val due: Long? = 0L,
+    val attend: Long? = 0L,
     val totalJp: Int? = 0,
     val postTest: List<PostTestModel>? = emptyList(),
     val sections: List<SectionModel>? = emptyList()

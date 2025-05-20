@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +47,11 @@ import com.composables.icons.lucide.Play
 import com.composables.icons.lucide.TimerReset
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
+import com.maspam.etrain.training.core.presentation.component.LoadingScreen
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 import com.maspam.etrain.training.core.presentation.utils.eventListener
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeFormatter
 import com.maspam.etrain.training.domain.model.EnrollModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.EnrollViewModel
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
@@ -63,6 +65,10 @@ fun DetailEnrollTraining(
     navigateToTakeTraining: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    LaunchedEffect(true) {
+        enrollViewModel.getEnrollById(enrollId = enroll.id ?: 0)
+    }
 
     val state by enrollViewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -104,6 +110,9 @@ fun DetailEnrollTraining(
             )
         }
     ) { innerPadding ->
+        if (state.isLoading) {
+            LoadingScreen(modifier = Modifier.fillMaxSize())
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,7 +167,7 @@ fun DetailEnrollTraining(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = enroll.trainingDetail?.due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
+                            text = enroll.trainingDetail?.due?.let { convertMillisToDate(it) } ?: stringResource(R.string.due_date),
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light)
                         )
                     }
@@ -293,7 +302,10 @@ fun DetailEnrollTraining(
                         totalJp = section.jp
                     )
                 }
+                Spacer(modifier = Modifier.height(30.dp))
             }
+
+
 
             if (
                 enroll.trainingDetail?.typeTraining == "webinar" && enroll.attandance == true ||
@@ -339,41 +351,44 @@ fun DetailEnrollTraining(
                     }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .padding(end = 20.dp, bottom = 20.dp)
-                    .clip(shape = RoundedCornerShape(30.dp))
-                    .background(color = MaterialTheme.colorScheme.primary)
-                    .align(alignment = Alignment.BottomEnd)
-                    .clickable {
-                        if (enroll.trainingDetail?.typeTraining == "webinar") {
-                            enrollViewModel.setAbsence(enrollId = enroll.id ?: 0)
-                        } else {
-                            navigateToTakeTraining()
-                        }
-                    }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+            if (enroll.status != "time out") {
+                Box(
                     modifier = Modifier
-                        .padding(horizontal = 30.dp, vertical = 10.dp)
+                        .padding(end = 20.dp, bottom = 20.dp)
+                        .clip(shape = RoundedCornerShape(30.dp))
+                        .background(color = MaterialTheme.colorScheme.primary)
+                        .align(alignment = Alignment.BottomEnd)
+                        .clickable {
+                            if (enroll.trainingDetail?.typeTraining == "webinar") {
+                                enrollViewModel.setAbsence(enrollId = enroll.id ?: 0)
+                            } else {
+                                navigateToTakeTraining()
+                            }
+                        }
                 ) {
-                    Text(
-                        text = if (enroll.trainingDetail?.typeTraining == "webinar") "Absenteeism" else stringResource(R.string.get_started),
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onPrimary
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 30.dp, vertical = 10.dp)
+                    ) {
+                        Text(
+                            text = if (enroll.trainingDetail?.typeTraining == "webinar") "Absenteeism" else stringResource(R.string.get_started),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )
-                    Icon(
-                        imageVector = Lucide.ChevronRight,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        contentDescription = "Icon Next",
-                        modifier = Modifier.size(24.dp)
-                    )
+                        Icon(
+                            imageVector = Lucide.ChevronRight,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            contentDescription = "Icon Next",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
+
 
         }
     }

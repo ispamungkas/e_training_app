@@ -21,8 +21,16 @@ class FileReader(
                     inputStream.readBytes()
                 } ?: byteArrayOf()
 
-            val fileName = UUID.randomUUID().toString()
             val mimeType = context.contentResolver.getType(contentUri) ?: ""
+
+            val extension = when (mimeType) {
+                "image/jpeg" -> ".jpg"
+                "image/png" -> ".png"
+                "image/gif" -> ".gif"
+                else -> ""
+            }
+
+            val fileName = UUID.randomUUID().toString() + extension
 
             FileInfo(
                 name = fileName,

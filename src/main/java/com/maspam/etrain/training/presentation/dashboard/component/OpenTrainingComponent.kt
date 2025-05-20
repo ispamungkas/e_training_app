@@ -1,6 +1,5 @@
 package com.maspam.etrain.training.presentation.dashboard.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -34,12 +33,16 @@ import com.maspam.etrain.training.domain.model.TrainingModel
 
 @Composable
 fun OpenTrainingComponent(
+    currentTraining: List<Int> = emptyList(),
     dataTraining: List<TrainingModel> = emptyList(),
     isLoading: Boolean = false,
     onClickItem: (Int) -> Unit,
     navigateToListOpenTraining: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val filtered = dataTraining.filter { !currentTraining.contains(it.id) }
+
     Card(
         modifier = modifier
             .fillMaxWidth(),
@@ -57,9 +60,10 @@ fun OpenTrainingComponent(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                Icon(
                     imageVector = Lucide.Globe,
                     contentDescription = "Icon Training",
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -102,8 +106,8 @@ fun OpenTrainingComponent(
         if (isLoading) {
             LoadingComponent(size = 100.dp, modifier.fillMaxWidth())
         } else {
-            if (dataTraining.isNotEmpty()) {
-                dataTraining.forEach { data ->
+            if (filtered.isNotEmpty()) {
+                filtered.forEach { data ->
                     OpenTrainingItemComponent(
                         modifier = Modifier.padding(bottom = 15.dp, end = 20.dp, start = 20.dp),
                         imageUri = data.image,

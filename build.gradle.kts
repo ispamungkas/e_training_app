@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://9a5b-180-254-68-92.ngrok-free.app/\"")
+            buildConfigField("String", "BASE_URL", "\"https://c126-180-254-71-156.ngrok-free.app/\"")
         }
         release {
             isMinifyEnabled = false
@@ -80,7 +80,15 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.compose.foundation:foundation:1.0.0")
-    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc12")
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-beta03")
+
+    implementation("androidx.camera:camera-core:1.3.1")
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0")
+    implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha02")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -2,16 +2,16 @@ package com.maspam.etrain.training.presentation.dashboard.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,28 +28,33 @@ import com.maspam.etrain.training.core.presentation.component.bounceClickWithBac
 @Composable
 fun MenusComponent(
     menus: List<Menu>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMenuClickedWithIndex: (Int) -> Unit,
 ) {
-    LazyVerticalGrid(
-        modifier = modifier.padding(horizontal = 38.dp),
-        columns = GridCells.Fixed(4),
-        verticalArrangement = Arrangement.spacedBy(15.dp),
-        horizontalArrangement = Arrangement.spacedBy(28.dp)
+    Row(
+        modifier = modifier
+            .horizontalScroll(state = rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(menus) { menu ->
-            MenuItem(menu)
+        menus.forEachIndexed { index, menu ->
+            MenuItem(menu = menu) {
+                onMenuClickedWithIndex(index)
+            }
         }
     }
+
 }
 
 @Composable
 fun MenuItem(
     menu: Menu,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMenuClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
@@ -58,6 +63,9 @@ fun MenuItem(
                 .clip(shape = RoundedCornerShape(15.dp))
                 .background(color = MaterialTheme.colorScheme.onBackground)
                 .bounceClickWithBackgroundEffect()
+                .clickable {
+                    onMenuClick()
+                }
         ) {
             Icon(
                 imageVector = menu.imageVector,

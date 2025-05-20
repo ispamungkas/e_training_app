@@ -27,6 +27,35 @@ class EnrollViewModel(
     private val _globalEvent = Channel<GlobalEvent>()
     val globalEvent = _globalEvent.receiveAsFlow()
 
+    fun getEnrollById(enrollId: Int) {
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        viewModelScope.launch {
+            enrollDataSource.getDetailEnroll(
+                token = userSessionDataSource.getToken(),
+                enrollId = enrollId
+            ) .onError { e ->
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                    )
+                }
+                _globalEvent.send(GlobalEvent.Error(e))
+            }
+                .onSuccess { result ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            data = result,
+                        )
+                    }
+                }
+        }
+    }
+
     fun setAbsence(enrollId: Int) {
         _state.update {
             it.copy(

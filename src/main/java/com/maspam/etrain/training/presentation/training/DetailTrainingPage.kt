@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,14 +42,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.composables.icons.lucide.LocateFixed
 import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Pen
 import com.composables.icons.lucide.TimerReset
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.CustomButtonFieldLoad
 import com.maspam.etrain.training.core.presentation.utils.ExpandableText
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 import com.maspam.etrain.training.core.presentation.utils.eventListener
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeVersion2Formatter
+import com.maspam.etrain.training.domain.model.PostTestModel
 import com.maspam.etrain.training.domain.model.SectionModel
 import com.maspam.etrain.training.domain.model.TrainingModel
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
@@ -62,15 +65,23 @@ fun DetailTrainingPage(
     detailTrainingViewModel: DetailTrainingViewModel,
     navigateToLoginPage: () -> Unit,
     modifier: Modifier = Modifier,
-    navigateToListSection: (List<SectionModel>) -> Unit,
+    navigateToEditPage: (TrainingModel) -> Unit,
+    navigateToListSection: (List<SectionModel>, Int) -> Unit,
+    navigateToPostTestPage: (List<SectionModel>, Int, List<PostTestModel>) -> Unit,
 ) {
 
     LaunchedEffect(true) {
         detailTrainingViewModel.setInitialValue(training)
+        detailTrainingViewModel.getTrainingById()
     }
 
     val state by detailTrainingViewModel.state.collectAsStateWithLifecycle()
-    val detailTraining = state.selected
+    val detailTraining = state.data
+
+    val sectionId = detailTraining?.sections?.map { it.id }
+    val postTestSize = sectionId?.mapNotNull {
+        detailTraining.postTest?.find { post -> post.section == it }
+    }
 
     eventListener(
         detailTrainingViewModel.globalEvent
@@ -99,7 +110,8 @@ fun DetailTrainingPage(
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar = {
 
         }
@@ -113,15 +125,12 @@ fun DetailTrainingPage(
                 }
             }
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-            ) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp)
-                    ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                ) {
+                    item {
                         Column(
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -130,16 +139,17 @@ fun DetailTrainingPage(
                                     .fillMaxWidth()
                                     .height(250.dp),
                                 contentScale = ContentScale.Crop,
+                                model = constructUrl(detailTraining?.image ?: ""),
                                 error = painterResource(R.drawable.placeholder_image_sample),
                                 placeholder = painterResource(R.drawable.placeholder_image_sample),
-                                model = constructUrl(detailTraining?.image ?: ""),
                                 contentDescription = "Training Image"
                             )
                             Row(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .padding(top = 15.dp)
+                                    .fillMaxWidth()
+                                    .padding(top = 15.dp, end = 20.dp, start = 20.dp)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
@@ -184,23 +194,17 @@ fun DetailTrainingPage(
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Text(
-                                        text = detailTraining?.due?.toDateTimeVersion2Formatter()
-                                            ?: stringResource(R.string.type_training),
-                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal)
-                                    )
+                                        text = convertMillisToDate(detailTraining?.due ?: 0L),
+                                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
+
+                                        )
                                 }
                             }
 
                             Text(
                                 modifier = Modifier.padding(vertical = 15.dp, horizontal = 20.dp),
-                                text = detailTraining?.name ?: stringResource(R.string.training),
-                                overflow = TextOverflow.Clip,
-                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
-                            )
-
-                            Text(
-                                modifier = Modifier.padding(bottom = 15.dp, start = 20.dp, end = 20.dp),
-                                text = stringResource(R.string.narasumber),
+                                text = detailTraining?.name
+                                    ?: stringResource(R.string.name_training),
                                 overflow = TextOverflow.Clip,
                                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
                             )
@@ -241,14 +245,16 @@ fun DetailTrainingPage(
                             )
 
                             Text(
-                                modifier = Modifier.padding(vertical = 10.dp),
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp),
                                 text = stringResource(R.string.materi),
                                 overflow = TextOverflow.Clip,
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
                             )
 
                             Row(
-                                modifier = Modifier.padding(horizontal = 20.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -277,70 +283,13 @@ fun DetailTrainingPage(
                                         },
                                         style = MaterialTheme.typography.bodySmall.copy(
                                             fontWeight = FontWeight.Normal,
-                                            color = MaterialTheme.colorScheme.onPrimary
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .border(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.outline
-                                        )
-                                        .clip(shape = RoundedCornerShape(10.dp))
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 34.dp,
-                                            vertical = 5.dp
-                                        ),
-                                        text = stringResource(R.string.add),
-                                        style = MaterialTheme.typography.bodySmall.copy(
-                                            fontWeight = FontWeight.Normal,
-                                        )
-                                    )
-                                }
-
-                            }
-
-                            Text(
-                                modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
-                                text = stringResource(R.string.materi),
-                                overflow = TextOverflow.Clip,
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
-                            )
-
-                            Row(
-                                modifier = Modifier.padding(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
                                             color = if ((detailTraining?.sections?.size
                                                     ?: 0) >= 1
                                             ) {
-                                                Color.Green.copy(alpha = 0.1f)
+                                                Color.Green
                                             } else {
-                                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
-                                            },
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(
-                                            horizontal = 34.dp,
-                                            vertical = 5.dp
-                                        ),
-                                        text = if ((detailTraining?.sections?.size ?: 0) >= 1) {
-                                            stringResource(R.string.completed)
-                                        } else {
-                                            stringResource(R.string.empty)
-                                        },
-                                        style = MaterialTheme.typography.bodySmall.copy(
-                                            fontWeight = FontWeight.Normal,
-                                            color = MaterialTheme.colorScheme.onPrimary
+                                                Color.Red
+                                            }
                                         )
                                     )
                                 }
@@ -348,12 +297,13 @@ fun DetailTrainingPage(
                                     modifier = Modifier
                                         .border(
                                             width = 1.dp,
-                                            color = MaterialTheme.colorScheme.outline
+                                            color = MaterialTheme.colorScheme.outline,
+                                            shape = RoundedCornerShape(10.dp)
                                         )
-                                        .clip(shape = RoundedCornerShape(10.dp))
                                         .clickable {
                                             navigateToListSection(
-                                                detailTraining?.sections ?: emptyList()
+                                                detailTraining?.sections ?: emptyList(),
+                                                training.id ?: 0
                                             )
                                         }
                                 ) {
@@ -371,26 +321,136 @@ fun DetailTrainingPage(
 
                             }
 
-                        }
-                        Row (
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        ) {
-                            CustomButtonFieldLoad(
-                                modifier = Modifier
-                                    .width(50.dp)
-                                    .padding(start = 5.dp),
-                                buttonName = if (detailTraining?.isPublish == false) stringResource(R.string.publish) else stringResource(
-                                    R.string.unpublish
+                            Text(
+                                modifier = Modifier.padding(
+                                    top = 30.dp,
+                                    start = 20.dp,
+                                    end = 20.dp
                                 ),
-                                buttonColor = if (detailTraining?.isPublish == false) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
-                                isLoading = state.isLoading
+                                text = stringResource(R.string.post_test),
+                                overflow = TextOverflow.Clip,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                detailTrainingViewModel.setPublishedTraining(
-                                    isPublish = detailTraining?.isPublish == false
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = if ((detailTraining?.postTest?.size
+                                                    ?: 0) >= 1
+                                            ) {
+                                                Color.Green.copy(alpha = 0.1f)
+                                            } else {
+                                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                                            },
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                ) {
+
+                                    Text(
+                                        modifier = Modifier.padding(
+                                            horizontal = 34.dp,
+                                            vertical = 5.dp
+                                        ),
+                                        text = if ((detailTraining?.postTest?.size
+                                                ?: 0) >= 1
+                                        ) {
+                                            stringResource(R.string.completed)
+                                        } else {
+                                            stringResource(R.string.empty)
+                                        },
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            fontWeight = FontWeight.Normal,
+                                            color = if ((detailTraining?.postTest?.size
+                                                    ?: 0) >= 1) {
+                                                Color.Green
+                                            } else {
+                                                Color.Red
+                                            }
+                                        )
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.outline,
+                                            shape = RoundedCornerShape(10.dp)
+                                        )
+                                        .clickable {
+                                            navigateToPostTestPage(
+                                                detailTraining?.sections ?: emptyList(),
+                                                training.id ?: 0,
+                                                postTestSize ?: emptyList()
+                                            )
+                                        }
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(
+                                                horizontal = 34.dp,
+                                                vertical = 5.dp
+                                            )
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        text = stringResource(R.string.add),
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            fontWeight = FontWeight.Normal,
+                                        )
+                                    )
+                                }
+
                             }
+
                         }
                     }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .align(alignment = Alignment.BottomCenter)
+                        .fillMaxWidth()
+                ) {
+                    CustomButtonFieldLoad(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 30.dp),
+                        buttonName = if (detailTraining?.isPublish == false) stringResource(R.string.publish) else stringResource(
+                            R.string.unpublish
+                        ),
+                        buttonColor = if (detailTraining?.isPublish == false) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                        isLoading = state.isLoading
+                    ) {
+                        detailTrainingViewModel.setPublishedTraining(
+                            isPublish = detailTraining?.isPublish == false
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(top = 40.dp, end = 30.dp)
+                        .align(alignment = Alignment.TopEnd)
+                        .size(50.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            shape = RoundedCornerShape(20.dp)
+                        )
+                        .clip(shape = RoundedCornerShape(20.dp))
+                        .clickable {
+                            navigateToEditPage(detailTraining ?: TrainingModel())
+                        }
+                ) {
+                    Icon(
+                        imageVector = Lucide.Pen,
+                        contentDescription = "Edit",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.align(alignment = Alignment.Center)
+                    )
                 }
             }
         }

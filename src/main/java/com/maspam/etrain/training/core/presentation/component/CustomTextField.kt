@@ -52,6 +52,7 @@ fun CustomTextField(
     valueInput: String? = "",
     readOnly: Boolean = false,
     label: String,
+    singleLine: Boolean = true,
     errorMessage: String? = "",
     hint: String? = "",
     onCompletedText: (String) -> Unit
@@ -66,6 +67,7 @@ fun CustomTextField(
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            singleLine = singleLine,
             interactionSource = interactionSource,
             value = value.value,
             readOnly = readOnly,
@@ -92,7 +94,7 @@ fun CustomTextField(
                 Text(text = label, style = style)
             },
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
+                imeAction = if (singleLine) ImeAction.Done else ImeAction.Default,
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
@@ -277,6 +279,7 @@ fun CustomEmailTextField(
         shape = RoundedCornerShape(10.dp),
         onValueChange = {
             value.value = it
+            onCompletedText(value.value)
         },
         placeholder = {
             Text(
@@ -300,7 +303,6 @@ fun CustomEmailTextField(
         keyboardActions = KeyboardActions(
             onDone = {
                 keyboardController?.hide()
-                onCompletedText(value.value)
             }
         )
     )

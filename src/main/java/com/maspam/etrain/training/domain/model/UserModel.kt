@@ -18,4 +18,5 @@ data class UserModel(
     val currentSchool: String? = null,
     val dayOfBirth: Long? = null,
     val imageProfile: String? = null,
+    val enrolls: List<EnrollModel>? = null
 )

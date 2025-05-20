@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeFormatter
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 import com.maspam.etrain.training.domain.model.EnrollModel
 
 @Composable
@@ -117,7 +117,7 @@ fun ListEnrollTrainingComponent(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
+                        text = due?.let { convertMillisToDate(it) } ?: stringResource(R.string.due_date),
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }

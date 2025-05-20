@@ -38,34 +38,50 @@ class AuthenticationViewModel(
     private val _state = MutableStateFlow(AuthenticationState())
     val state = _state.asStateFlow()
 
+    private val _initialState = MutableStateFlow(AuthenticationState())
+    val initialState = _initialState.asStateFlow()
+
     private val _event = Channel<AuthenticationEvent>()
     val event = _event.receiveAsFlow()
 
     fun onEvent(event: AuthenticationFormEvent) {
-        when(event) {
+        when (event) {
             is AuthenticationFormEvent.NameChanged -> {
-                _state.update { it.copy(
-                    name = event.name
-                ) }
+                _state.update {
+                    it.copy(
+                        name = event.name
+                    )
+                }
             }
+
             is AuthenticationFormEvent.NipChanged -> {
-                _state.update { it.copy(
-                    nip = event.nip
-                ) }
+                _state.update {
+                    it.copy(
+                        nip = event.nip
+                    )
+                }
             }
+
             is AuthenticationFormEvent.PasswordChanged -> {
-                _state.update { it.copy(
-                    password = event.password
-                ) }
+                _state.update {
+                    it.copy(
+                        password = event.password
+                    )
+                }
             }
+
             is AuthenticationFormEvent.IsHeadChange -> {
-                _state.update { it.copy(
-                    isHeadCheck = event.check
-                )}
+                _state.update {
+                    it.copy(
+                        isHeadCheck = event.check
+                    )
+                }
             }
+
             is AuthenticationFormEvent.submitLogin -> {
                 submitLogin()
             }
+
             is AuthenticationFormEvent.submitRegister -> {
                 submitRegister()
             }
@@ -81,10 +97,12 @@ class AuthenticationViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            _state.update { it.copy(
-                nipErrorMessage = nipResult.errorMessage,
-                passwordErrorMessage = passwordResult.errorMessage
-            ) }
+            _state.update {
+                it.copy(
+                    nipErrorMessage = nipResult.errorMessage,
+                    passwordErrorMessage = passwordResult.errorMessage
+                )
+            }
             return
         }
 
@@ -96,21 +114,23 @@ class AuthenticationViewModel(
                 password = _state.value.password ?: "",
             )
                 .onSuccess { res ->
-                    _state.update { it.copy(
-                        isLoading = false,
-                        user = res
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            user = res
+                        )
+                    }
 
-                    // Update to data store
                     userSessionDataSource.update(data = res)
-                    println("hasil = ${res}")
 
                     _event.send(AuthenticationEvent.Success)
                 }
                 .onError { error ->
-                    _state.update { it.copy(
-                        isLoading = false
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
                     _event.send(
                         AuthenticationEvent.Error(e = error)
                     )
@@ -127,10 +147,12 @@ class AuthenticationViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            _state.update { it.copy(
-                nipErrorMessage = nipResult.errorMessage,
-                nameErrorMessage = nameResult.errorMessage
-            ) }
+            _state.update {
+                it.copy(
+                    nipErrorMessage = nipResult.errorMessage,
+                    nameErrorMessage = nameResult.errorMessage
+                )
+            }
             return
         }
 
@@ -143,20 +165,20 @@ class AuthenticationViewModel(
                 isHead = _state.value.isHeadCheck ?: false
             )
                 .onSuccess { res ->
-                    println("BSER ")
-
-                    _state.update { it.copy(
-                        isLoading = false,
-                        user = res
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            user = res
+                        )
+                    }
                     _event.send(AuthenticationEvent.Success)
                 }
                 .onError { error ->
-                    println("ERR : $error")
-
-                    _state.update { it.copy(
-                        isLoading = false
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
                     _event.send(
                         AuthenticationEvent.Error(e = error)
                     )
@@ -165,20 +187,34 @@ class AuthenticationViewModel(
     }
 
     fun setError(e: NetworkError?) {
-        _state.update { it.copy (
-            errorResult = e
-        )}
+        _state.update {
+            it.copy(
+                errorResult = e
+            )
+        }
     }
 
     fun setSuccess(value: Boolean) {
-        _state.update { it.copy (
-            isSuccess = value
-        )}
+        _state.update {
+            it.copy(
+                isSuccess = value
+            )
+        }
+    }
+
+    fun getUser() {
+        viewModelScope.launch {
+            val data = userSessionDataSource.getUserSession()
+            println("viewModel $data")
+            _initialState.update {
+                it.copy(userSession = data)
+            }
+        }
     }
 
     sealed interface AuthenticationEvent {
-        data class Error(val e: NetworkError): AuthenticationEvent
-        object Success: AuthenticationEvent
+        data class Error(val e: NetworkError) : AuthenticationEvent
+        object Success : AuthenticationEvent
     }
 
 }

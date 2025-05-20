@@ -16,6 +16,7 @@ fun TrainingDto.toTrainingModel(): TrainingModel {
         typeTrainingCategory = this.typeTrainAc,
         isOpen = this.isOpen,
         desc = this.desc,
+        attend = this.attend,
         totalTaken = this.enrolls?.size,
         due = this.dateline,
         totalJp = this.totalJp,
@@ -37,6 +38,7 @@ fun SectionDto.toSectionModel(): SectionModel {
         name = this.name,
         jp = this.jp,
         status = this.status,
+        trainId = this.trainId,
         topics = this.topics?.map {
             it.toTopicModel()
         }
@@ -48,6 +50,7 @@ fun TopicDto.toTopicModel(): TopicModel {
         id = this.id,
         name = this.name,
         content = this.content,
+        sectionId = this.sectionId,
         topicImage = this.img,
     )
 }

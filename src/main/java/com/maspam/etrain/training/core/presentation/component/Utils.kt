@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 
@@ -75,4 +76,16 @@ fun Modifier.bounceClickWithBackgroundEffect() = composed {
             color = if (buttonState == ButtonState.Pressed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onPrimary
         )
 
+}
+
+fun setColorBackground(status: String) = when (status) {
+    "pending" -> Color.Yellow.copy(alpha = 0.3f)
+    "accepted" -> Color.Green.copy(alpha = 0.3f)
+    else -> Color.Red.copy(alpha = 0.3f)
+}
+
+fun setColorItem(status: String) = when (status) {
+    "pending" -> Color.Yellow
+    "accepted" -> Color.Green
+    else -> Color.Red
 }

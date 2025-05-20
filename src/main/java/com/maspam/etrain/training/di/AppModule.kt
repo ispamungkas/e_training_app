@@ -22,13 +22,20 @@ import com.maspam.etrain.training.presentation.authentication.viewmodel.ForgotPa
 import com.maspam.etrain.training.presentation.authentication.viewmodel.OTPViewModel
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardViewModel
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.ListOpenTrainingViewModel
+import com.maspam.etrain.training.presentation.dashboard.viewmodel.UserAccountViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.EnrollViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
+import com.maspam.etrain.training.presentation.karyanyata.viewmodel.KaryaNyataViewModel
 import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.ProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdateDataProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdatePasswordProfileViewModel
+import com.maspam.etrain.training.presentation.scanner.ScannerViewModel
 import com.maspam.etrain.training.presentation.taketraining.viewmodel.TakeTrainingViewModel
+import com.maspam.etrain.training.presentation.training.viewmodel.DetailTrainingViewModel
+import com.maspam.etrain.training.presentation.training.viewmodel.ListSectionViewModel
+import com.maspam.etrain.training.presentation.training.viewmodel.ListTopicViewModel
+import com.maspam.etrain.training.presentation.training.viewmodel.PostTestViewModel
 import com.maspam.etrain.training.presentation.training.viewmodel.TrainingViewModel
 import io.ktor.client.engine.cio.CIO
 import org.koin.android.ext.koin.androidApplication
@@ -63,6 +70,13 @@ val appModule = module {
     viewModelOf(::ListEnrollProfileViewModel)
     viewModelOf(::EnrollViewModel)
     viewModelOf(::TrainingViewModel)
+    viewModelOf(::DetailTrainingViewModel)
+    viewModelOf(::ListSectionViewModel)
+    viewModelOf(::ListTopicViewModel)
+    viewModelOf(::PostTestViewModel)
     viewModelOf(::ListNewsViewModel)
     viewModelOf(::TakeTrainingViewModel)
+    viewModelOf(::KaryaNyataViewModel)
+    viewModelOf(::UserAccountViewModel)
+    viewModelOf(::ScannerViewModel)
 }

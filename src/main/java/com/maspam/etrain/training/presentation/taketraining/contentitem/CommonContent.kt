@@ -24,12 +24,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +43,7 @@ import com.composables.icons.lucide.Timer
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.HtmlText
+import com.maspam.etrain.training.core.presentation.component.sanitizeHtml
 import com.maspam.etrain.training.domain.model.TopicModel
 
 @Composable
@@ -138,7 +141,7 @@ fun CommonContentPage(
                                     )
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Text(
-                                        text = "45 Menit",
+                                        text = stringResource(R.string._45_minutes),
                                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Medium)
                                     )
                                 }
@@ -148,11 +151,12 @@ fun CommonContentPage(
                                     .fillMaxWidth()
                                     .padding(vertical = 15.dp)
                             )
-                            val htmlContent = topicModel.content ?: "Topic Content"
-                            HtmlText(
-                                modifier = Modifier.fillMaxWidth(),
-                                html = htmlContent
-                            )
+                            key(topicModel.id) {
+                                HtmlText(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    html = sanitizeHtml(topicModel.content ?: "Topic Content")
+                                )
+                            }
 
                             if (!isCheck) {
                                 Box(

@@ -74,7 +74,7 @@ class DetailTrainingViewModel(
     fun setInitialValue(trainingModel: TrainingModel) {
         _state.update {
             it.copy(
-                data = trainingModel
+                data = trainingModel,
             )
         }
     }

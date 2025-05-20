@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.maspam.etrain.R
@@ -23,13 +24,15 @@ fun CustomBottomSheetSectionComponent(
     modifier: Modifier = Modifier,
     message: String,
     isLoading: Boolean,
+    initialName: String? = "",
+    initialJp: Int? = 0,
     label: String,
     onDismiss: () -> Unit,
     onSubmit: (String, Int) -> Unit
 ) {
 
-    var name by remember { mutableStateOf("") }
-    var jp by remember { mutableStateOf(0) }
+    var name by remember { mutableStateOf(initialName) }
+    var jp by remember { mutableStateOf(initialJp) }
 
     Column(
         modifier = modifier
@@ -37,7 +40,11 @@ fun CustomBottomSheetSectionComponent(
             .padding(horizontal = 20.dp)
     ) {
         Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 15.dp),
             text = message,
+            textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium,
             overflow = TextOverflow.Ellipsis
         )
@@ -57,10 +64,12 @@ fun CustomBottomSheetSectionComponent(
             hint = stringResource(R.string.input_total_jp),
             valueInput = jp.toString()
         ) {
-            jp = it.toInt()
+            if (it.isNotBlank()) {
+                jp = it.toInt()
+            }
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             CustomButtonField(
@@ -70,13 +79,74 @@ fun CustomBottomSheetSectionComponent(
                 onClick = onDismiss
             )
             CustomButtonFieldLoad(
-                isEnable = if (name.isNotBlank() || jp != 0) true else false,
+                isEnable = if (name?.isNotBlank() == true || jp != 0) true else false,
                 modifier = Modifier.weight(0.5f),
                 buttonName = stringResource(R.string.submit),
                 buttonColor = MaterialTheme.colorScheme.primary,
                 isLoading = isLoading,
                 onClick = {
-                    onSubmit(name, jp)
+                    onSubmit(name ?: "", jp ?: 0)
+                }
+            )
+        }
+    }
+
+}
+
+@Composable
+fun CustomBottomSheetSectionComponent2(
+    modifier: Modifier = Modifier,
+    message: String,
+    isLoading: Boolean,
+    initialName: String? = "",
+    label: String,
+    onDismiss: () -> Unit,
+    onSubmit: (String) -> Unit
+) {
+
+    var name by remember { mutableStateOf(initialName) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 15.dp),
+            text = message,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
+            overflow = TextOverflow.Ellipsis
+        )
+        CustomTextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            valueInput = name,
+            label = label,
+            hint = stringResource(R.string.input_the, label)
+        ) {
+            name = it
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            CustomButtonField(
+                modifier = Modifier.weight(0.5f),
+                buttonName = stringResource(R.string.cancel),
+                buttonColor = MaterialTheme.colorScheme.error,
+                onClick = onDismiss
+            )
+            CustomButtonFieldLoad(
+                isEnable = if (name?.isNotBlank() == true) true else false,
+                modifier = Modifier.weight(0.5f),
+                buttonName = stringResource(R.string.submit),
+                buttonColor = MaterialTheme.colorScheme.primary,
+                isLoading = isLoading,
+                onClick = {
+                    onSubmit(name ?: "")
                 }
             )
         }

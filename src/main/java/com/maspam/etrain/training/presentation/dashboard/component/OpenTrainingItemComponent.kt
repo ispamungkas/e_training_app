@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +36,7 @@ import com.composables.icons.lucide.TimerReset
 import com.composables.icons.lucide.User
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeFormatter
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 
 @Composable
 fun OpenTrainingItemComponent(
@@ -118,7 +118,7 @@ fun OpenTrainingItemComponent(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = due?.toDateTimeFormatter() ?: stringResource(R.string.due_date),
+                        text = convertMillisToDate(due ?: 0L),
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
                     )
                 }
@@ -174,7 +174,7 @@ fun OpenTrainingItemComponent(
                 Box(
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(20.dp))
-                        .background(color = if (isOpen == true) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+                        .background(color = if (isOpen == true) Color.Green.copy(alpha = 0.3f) else MaterialTheme.colorScheme.error.copy(alpha = 0.3f))
                 ) {
                     Text(
                         text = if (isOpen == true) stringResource(R.string.open) else stringResource(
@@ -182,7 +182,7 @@ fun OpenTrainingItemComponent(
                         ),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontWeight = FontWeight.Medium,
-                            color = Color.White,
+                            color =  if (isOpen == true) Color.Green else Color.Red,
                         ),
                         modifier = Modifier.padding(horizontal = 13.dp, vertical = 3.dp),
                     )

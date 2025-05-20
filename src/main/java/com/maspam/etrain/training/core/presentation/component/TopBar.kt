@@ -30,6 +30,7 @@ import com.composables.icons.lucide.ChevronLeft
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Menu
 import com.maspam.etrain.R
+import com.maspam.etrain.training.core.networking.constructUrl
 
 @Composable
 fun TopBarComponent(
@@ -49,7 +50,9 @@ fun TopBarComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = imageUri ?: R.drawable.profile_default,
+                model = constructUrl(imageUri ?: ""),
+                error = painterResource(R.drawable.profile_default),
+                placeholder = painterResource(R.drawable.profile_default),
                 contentDescription = "profile",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

@@ -86,6 +86,7 @@ fun NewsItemComponent(
                         color = MaterialTheme.colorScheme.outline,
                         fontWeight = FontWeight.Medium
                     ),
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
             }

@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PostTestModel(
-    val id: Int? = 0,
+    val id: Int? = null,
     val train: Int? = 0,
     val question: List<String>? = null,
     val answers: List<AnswerDto>? = null,

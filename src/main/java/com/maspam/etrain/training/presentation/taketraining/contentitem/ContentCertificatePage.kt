@@ -25,15 +25,15 @@ import com.maspam.etrain.training.core.presentation.component.TopBarWithStartIma
 @Composable
 fun ContentCertificatePage(
     modifier: Modifier = Modifier,
-    linkCertificate: String?,
+    linkCertificate: String,
     onButtonDownloadClicked: () -> Unit,
     onMenuClicked: () -> Unit
 ) {
 
-    linkCertificate?.let {
-        val url = it.removeRange(0..5)
+    val context = LocalContext.current
+    if (linkCertificate != "") {
+        val url = linkCertificate.removeRange(0..5)
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(constructUrl(url)))
-        val context = LocalContext.current
         context.startActivity(intent, null)
     }
 
@@ -73,6 +73,7 @@ fun ContentCertificatePage(
                         .height(50.dp),
                     onClick = {
                         onButtonDownloadClicked()
+
                     }
                 ) {
                     Text(

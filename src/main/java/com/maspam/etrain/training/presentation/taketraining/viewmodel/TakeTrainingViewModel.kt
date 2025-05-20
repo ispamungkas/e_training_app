@@ -211,11 +211,14 @@ class TakeTrainingViewModel(
                     _globalEvent.send(GlobalEvent.Error(e))
                 }
                 .onSuccess { result ->
+                    val sectionId = _state.value.data?.trainingDetail?.sections
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            postTest = result.filter { value ->
-                                value.train == _state.value.data?.train
+                            postTest = sectionId?.mapNotNull { section ->
+                                result.filter { value ->
+                                    value.train == _state.value.data?.train
+                                }.find { post -> post.section == section.id}
                             }
                         )
                     }
@@ -441,6 +444,32 @@ class TakeTrainingViewModel(
         }
     }
 
+    fun getEnrollById() {
+        _state.update {
+            it.copy(isLoading = true)
+        }
+        viewModelScope.launch {
+            enrollDataSource.getEnrollByEnrollId(
+                token = userSessionDataSource.getToken(),
+                enrollId = _state.value.data?.id ?: 0
+            )
+                .onSuccess { result ->
+                    _state.update {
+                        it.copy(isLoading = false, isRefresh = false, data = result)
+                    }
+                }
+                .onError { e ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isRefresh = false
+                        )
+                    }
+                    _globalEvent.send(GlobalEvent.Error(e))
+                }
+        }
+    }
+
     fun setFileUri(file: Uri?) {
         file?.let { value ->
             _state.update {
@@ -456,6 +485,12 @@ class TakeTrainingViewModel(
             it.copy(
                 error = e
             )
+        }
+    }
+
+    fun setRefresh(value: Boolean) {
+        _state.update {
+            it.copy(isRefresh = true)
         }
     }
 

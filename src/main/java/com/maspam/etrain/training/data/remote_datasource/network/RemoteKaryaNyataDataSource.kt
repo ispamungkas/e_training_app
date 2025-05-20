@@ -17,6 +17,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -27,6 +28,33 @@ class RemoteKaryaNyataDataSource(
     private val httpClient: HttpClient,
     private val fileReader: FileReader,
 ): KaryaNyataDataSource {
+    override suspend fun getAllKaryanyata(token: String): Result<List<KaryaNyataModel>, NetworkError> {
+        return safeCall <BaseDto<List<KaryaNyataDto>>>{
+            httpClient.get(
+                urlString = constructUrl("/karyanyata/"),
+            ) {
+                bearerAuth(token = token)
+            }
+        }.map { response ->
+            response.data?.map { it.toKaryaNyataModel() } ?: emptyList()
+        }
+    }
+
+    override suspend fun getKaryaNyataById(
+        token: String,
+        karyaNyataId: Int
+    ): Result<KaryaNyataModel, NetworkError> {
+        return safeCall <BaseDto<KaryaNyataDto>>{
+            httpClient.get(
+                urlString = constructUrl("/karyanyata/?id=$karyaNyataId"),
+            ) {
+                bearerAuth(token = token)
+            }
+        }.map { response ->
+            response.data?.toKaryaNyataModel() ?: KaryaNyataModel()
+        }
+    }
+
     override suspend fun uploadKaryaNyata(token: String, att: Uri, enrollId: Int, userId: Int): Result<KaryaNyataModel, NetworkError> {
         val infoFile = att.let { fileReader.uriToFileInfo(it) }
 
@@ -120,7 +148,7 @@ class RemoteKaryaNyataDataSource(
                         formData {
                             append("att", infoFile.bytes, Headers.build {
                                 append(HttpHeaders.ContentType, infoFile.mimeType)
-                                append(HttpHeaders.ContentDisposition, "filename=${infoFile.name}")
+                                append(HttpHeaders.ContentDisposition, "filename=${infoFile.name}.pdf")
                             })
                         }
                     )

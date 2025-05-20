@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 
 class ListSectionViewModel(
     private val userSessionDataSource: UserSessionDataSource,
-    private val trainingDataSource: TrainingDataSource
-): ViewModel() {
+    private val trainingDataSource: TrainingDataSource,
+) : ViewModel() {
 
     private var _state = MutableStateFlow(ListSectionState())
     val state = _state.asStateFlow()
@@ -43,7 +43,12 @@ class ListSectionViewModel(
                     _globalEvent.send(GlobalEvent.Error(e = error))
                 }
                 .onSuccess { result ->
-                    _state.update { it.copy(isLoading = false, isRefresh = false, data = result, isSuccess = true) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isRefresh = false,
+                            data = result.filter { it.trainId == _state.value.trainId }.sortedByDescending { it.id })
+                    }
                 }
         }
     }
@@ -75,12 +80,15 @@ class ListSectionViewModel(
                     _globalEvent.send(GlobalEvent.Error(e = error))
                 }
                 .onSuccess { result ->
-                    _state.update { it.copy(isLoading = false, isRefresh = false, data = result, isSuccess = true) }
+                    _state.update {
+                        it.copy(isLoading = false, isRefresh = false, data = result
+                            .filter { value -> value.trainId == _state.value.trainId }.sortedByDescending { it.id })
+                    }
                 }
         }
     }
 
-    fun setSection(sectionName: String, jp: Int, trainingId: Int) {
+    fun addSection(sectionName: String, jp: Int, trainingId: Int) {
         _state.update {
             it.copy(
                 isLoading = true
@@ -109,15 +117,68 @@ class ListSectionViewModel(
                     _globalEvent.send(GlobalEvent.Error(e = error))
                 }
                 .onSuccess { result ->
-                    _state.update { it.copy(isLoading = false, isRefresh = false, data = result, isSuccess = true) }
+                    _state.update {
+                        it.copy(isLoading = false,
+                            isRefresh = false,
+                            isSuccess = true,
+                            data = result
+                                .filter { it.trainId == trainingId }.sortedByDescending { it.id })
+                    }
                 }
         }
     }
 
-    fun setInitialValue(sectionList: List<SectionModel>) {
+    fun updateSection(sectionName: String, jp: Int, sectionId: Int) {
         _state.update {
             it.copy(
-                data = sectionList
+                isLoading = true
+            )
+        }
+        viewModelScope.launch {
+            trainingDataSource.updateSection(
+                token = userSessionDataSource.getToken(),
+                sectionId = sectionId,
+                jp = jp,
+                sectionName = sectionName
+            )
+                .onError { error ->
+                    _state.update { it.copy(isLoading = false, isRefresh = false) }
+                    _globalEvent.send(GlobalEvent.Error(e = error))
+                }
+                .onSuccess { result ->
+                    _state.update { it.copy(isLoading = false, isRefresh = false) }
+                }
+
+            trainingDataSource.getAllSection(
+                token = userSessionDataSource.getToken(),
+            )
+                .onError { error ->
+                    _state.update { it.copy(isLoading = false, isRefresh = false) }
+                    _globalEvent.send(GlobalEvent.Error(e = error))
+                }
+                .onSuccess { result ->
+                    _state.update {
+                        it.copy(isLoading = false, isRefresh = false, data = result.filter {
+                            it.trainId == _state.value.trainId
+                        }, isSuccess = true)
+                    }
+                }
+        }
+    }
+
+    fun setInitialValue(sectionList: List<SectionModel>, trainingId: Int) {
+        _state.update {
+            it.copy(
+                data = sectionList.sortedByDescending { it.id },
+                trainId = trainingId,
+            )
+        }
+    }
+
+    fun setShowConfirmation(value: Boolean) {
+        _state.update {
+            it.copy(
+                showConfirmation = value
             )
         }
     }
@@ -126,6 +187,22 @@ class ListSectionViewModel(
         _state.update {
             it.copy(error = e)
         }
+    }
+
+    fun setInitialNameJpAndSectionId(name: String, jp: Int, sectionId: Int) {
+        _state.update {
+            it.copy(
+                initialName = name,
+                initialJp = jp,
+                isEdit = true,
+                selectedSection = sectionId
+            )
+        }
+        setShowModal(true)
+    }
+
+    fun setSelectedSection(value: Int) {
+        _state.update { it.copy(selectedSection = value) }
     }
 
     fun refresh() {
@@ -138,6 +215,10 @@ class ListSectionViewModel(
 
     fun setShowModal(value: Boolean) {
         _state.update { it.copy(showModal = value) }
+    }
+
+    fun setIsAdd() {
+        _state.update { it.copy(isEdit = false) }
     }
 
 }

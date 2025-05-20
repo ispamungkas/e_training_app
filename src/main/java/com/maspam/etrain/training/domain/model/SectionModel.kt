@@ -8,5 +8,6 @@ data class SectionModel(
     val name: String? = "",
     val jp: Int? = 0,
     val status: String? = "",
+    val trainId: Int? = 0,
     val topics: List<TopicModel>? = null
 )

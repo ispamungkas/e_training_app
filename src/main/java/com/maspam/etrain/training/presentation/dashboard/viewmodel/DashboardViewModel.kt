@@ -44,10 +44,8 @@ class DashboardViewModel(
 
     fun getUser() {
         viewModelScope.launch {
-            userSessionDataSource.getUserSession()
-                .collect(collector = { data ->
-                    _state.update { it.copy(user = data) }
-                })
+           _state.update { it.copy(user = userSessionDataSource.getUserSession()) }
+
         }
     }
 
@@ -77,7 +75,6 @@ class DashboardViewModel(
         viewModelScope.launch {
             trainingDataSource.getOpenTraining(
                 token = userSessionDataSource.getToken(),
-                isOpen = false
             )
                 .onError { error ->
                     _state.update {
@@ -90,13 +87,16 @@ class DashboardViewModel(
                     _event.send(EventDashboard.Error(error))
                 }
                 .onSuccess { result ->
+                    val tTraining = userSessionDataSource.getTakeTraining()
                     _state.update {
                         it.copy(
                             isLoading = false,
                             isRefresh = false,
-                            openTrain = result.sortedByDescending { train -> train.id }
+                            openTrain = result.sortedByDescending { train -> train.id }.filter { data ->  data.isOpen == true && data.isPublish == true && !tTraining.contains(data.id ?: 0) }
                         )
                     }
+                    println(tTraining)
+                    println(_state.value.openTrain?.map { it.id })
                 }
         }
     }
@@ -118,8 +118,10 @@ class DashboardViewModel(
                 }
                 .onSuccess {
                     _state.update { it.copy(
-                        isLoading = false
+                        isLoading = false,
+                        isSuccessful = true
                     ) }
+                    userSessionDataSource.updateTakenTraining(trainingId)
                 }
         }
     }
@@ -150,6 +152,10 @@ class DashboardViewModel(
                 isLoading = true
             )
         }
+    }
+
+    fun dismisDialog() {
+        _state.update { it.copy(isSuccessful = false) }
     }
 
 

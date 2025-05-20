@@ -1,10 +1,9 @@
 package com.maspam.etrain.training.presentation.training
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,21 +31,25 @@ import com.composables.icons.lucide.Plus
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.CustomTextField
 import com.maspam.etrain.training.core.presentation.component.FilterListComponent
+import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
+import com.maspam.etrain.training.core.presentation.component.bounceClick
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.core.presentation.utils.eventListener
+import com.maspam.etrain.training.domain.model.TrainingModel
 import com.maspam.etrain.training.presentation.dashboard.component.LoadingComponent
 import com.maspam.etrain.training.presentation.dashboard.component.OpenTrainingItemComponent
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
 import com.maspam.etrain.training.presentation.training.viewmodel.TrainingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ListTrainingPage(
     trainingViewModel: TrainingViewModel,
     modifier: Modifier = Modifier,
+    navigateToFormAddTraining: () -> Unit,
     navigateToLoginPage: () -> Unit,
-    onDetailTraining: () -> Unit,
+    onBackPressed: () -> Unit,
+    onDetailTraining: (TrainingModel) -> Unit,
 ) {
 
     val state by trainingViewModel.state.collectAsStateWithLifecycle()
@@ -78,22 +82,32 @@ fun ListTrainingPage(
     Scaffold(
         modifier = modifier
             .systemBarsPadding(),
+        topBar = {
+            TopBarWithArrowComponent(
+                section = stringResource(R.string.training)
+            ) {
+                onBackPressed()
+            }
+        },
         floatingActionButton = {
             Box(
                 modifier = Modifier
+                    .size(50.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(20.dp)
                     )
+                    .bounceClick()
                     .clickable {
-
+                        navigateToFormAddTraining()
                     }
             ) {
                 Icon(
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(20.dp),
+                        .size(25.dp)
+                        .align(alignment = Alignment.Center),
                     imageVector = Lucide.Plus,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     contentDescription = "Icon Add"
                 )
             }
@@ -111,16 +125,19 @@ fun ListTrainingPage(
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(innerPadding)
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
 
                 item {
                     FilterListComponent(
+                        modifier = Modifier.padding(top = 10.dp),
                         filters = listOf(
                             "All", "Close", "Open", "Publish"
                         ),
                         onSelected = { filter ->
                             when (filter) {
+                                "All" -> trainingViewModel.setFilterAll()
                                 "Close" -> trainingViewModel.setFilter(false)
                                 "Open" -> trainingViewModel.setFilter(true)
                                 "Publish" -> trainingViewModel.setFilterPublish(true)
@@ -132,11 +149,12 @@ fun ListTrainingPage(
                 item {
                     CustomTextField(
                         modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
                         valueInput = state.search,
                         readOnly = false,
-                        label = "Search",
-                        hint = "Search",
+                        label = stringResource(R.string.search),
+                        hint = stringResource(R.string.search),
                     ) { value ->
                         trainingViewModel.setValueOfSearch(value)
                     }
@@ -144,13 +162,17 @@ fun ListTrainingPage(
 
                 if (state.isLoading == true) {
                     items(4) {
-                        LoadingComponent(size = 100.dp, modifier = Modifier.fillMaxWidth())
+                        LoadingComponent(size = 100.dp, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp))
                     }
                 } else {
                     state.filteredList?.let {
                         items(items = it, key = { x -> x.id ?: 0 }) { training ->
                             OpenTrainingItemComponent(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
                                 id = training.id,
                                 isOpen = training.isOpen,
                                 nameTraining = training.name,
@@ -160,7 +182,7 @@ fun ListTrainingPage(
                                 imageUri = training.image,
                                 totalPerson = training.totalTaken,
                                 onItemClick = {
-                                    onDetailTraining()
+                                    onDetailTraining(training)
                                 }
                             )
                         }

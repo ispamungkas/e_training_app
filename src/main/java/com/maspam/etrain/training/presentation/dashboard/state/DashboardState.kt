@@ -9,6 +9,7 @@ import com.maspam.etrain.training.domain.model.TrainingModel
 @Immutable
 data class DashboardState(
     val isLoading: Boolean = true,
+    val isSuccessful: Boolean = false,
     val error: NetworkError? = null,
     val news: List<NewsModel>? = null,
     val openTrain: List<TrainingModel>? = null,

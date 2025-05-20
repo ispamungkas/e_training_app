@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maspam.etrain.R
+import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarComponent
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.domain.model.NewsModel
@@ -39,6 +41,7 @@ import com.maspam.etrain.training.presentation.dashboard.component.LoadingCompon
 import com.maspam.etrain.training.presentation.dashboard.component.ModalTrainingDetailComponent
 import com.maspam.etrain.training.presentation.dashboard.component.NewsItemComponent
 import com.maspam.etrain.training.presentation.dashboard.component.OpenTrainingComponent
+import com.maspam.etrain.training.presentation.dashboard.component.ScannerButtonComponent
 import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +54,7 @@ fun TeacherDashboardPage(
     navigateToListOpenTraining: () -> Unit,
     navigateToListNews: () -> Unit,
     navigateToDetailNews: (NewsModel) -> Unit,
+    navigateToScannerPage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -69,6 +73,15 @@ fun TeacherDashboardPage(
             },
             onDismiss = { dashboardViewModel.setError(e = null) },
         )
+    }
+
+    if (state.isSuccessful) {
+        SuccessDialog(
+            message = stringResource(R.string.successfully_enroll_training)
+        ) {
+            dashboardViewModel.dismisDialog()
+            navigateToEnrollList()
+        }
     }
 
     if (state.isRefresh) {
@@ -94,103 +107,111 @@ fun TeacherDashboardPage(
                 dashboardViewModel.refresh()
             }
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item {
-                    Text(
-                        stringResource(R.string.feature),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-                    )
-                }
-
-                item {
-                    ImageSliderComponent(
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                }
-
-                item {
-                    OpenTrainingComponent(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp),
-                        dataTraining = state.openTrain ?: emptyList(),
-                        isLoading = state.isLoading,
-                        onClickItem = { id ->
-                            dashboardViewModel.setModalBottomSheetState(value = true, id = id)
-                        },
-                        navigateToListOpenTraining = navigateToListOpenTraining
-                    )
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item {
                         Text(
-                            stringResource(R.string.news),
+                            stringResource(R.string.feature),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
                             ),
-                        )
-                        Text(
-                            stringResource(R.string.view_all),
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium
-                            ),
-                            modifier = Modifier
-                                .clickable {
-                                    navigateToListNews()
-                                }
+                            modifier = Modifier.padding(start = 20.dp, top = 10.dp)
                         )
                     }
-                }
 
-                if (state.isLoading) {
-                    items(4) {
-                        LoadingComponent(
-                            size = 110.dp,
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)
+                    item {
+                        ImageSliderComponent(
+                            modifier = Modifier.padding(vertical = 10.dp)
                         )
                     }
-                } else {
-                    state.news?.let { news ->
-                        items(news) { newsItem ->
-                            NewsItemComponent(
-                                image = newsItem.image,
-                                newsHeadline = newsItem.desc,
-                                author = newsItem.author,
-                                postDate = newsItem.publishDate,
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+
+                    item {
+                        OpenTrainingComponent(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp),
+                            dataTraining = state.openTrain ?: emptyList(),
+                            currentTraining = state.user?.enroll ?: emptyList(),
+                            isLoading = state.isLoading,
+                            onClickItem = { id ->
+                                dashboardViewModel.setModalBottomSheetState(value = true, id = id)
+                            },
+                            navigateToListOpenTraining = navigateToListOpenTraining
+                        )
+                    }
+
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 15.dp, bottom = 15.dp, start = 20.dp, end = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                stringResource(R.string.news),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                ),
+                            )
+                            Text(
+                                stringResource(R.string.view_all),
+                                style = MaterialTheme.typography.labelLarge.copy(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                modifier = Modifier
                                     .clickable {
-                                        navigateToDetailNews(newsItem)
+                                        navigateToListNews()
                                     }
                             )
                         }
-                    } ?: item {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(R.string.no_news_for_today),
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
-                        )
                     }
-                }
 
-                item { Spacer(modifier = Modifier.height(20.dp)) }
+                    if (state.isLoading) {
+                        items(4) {
+                            LoadingComponent(
+                                size = 110.dp,
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                            )
+                        }
+                    } else {
+                        state.news?.let { news ->
+                            items(news) { newsItem ->
+                                NewsItemComponent(
+                                    image = newsItem.image,
+                                    newsHeadline = newsItem.desc,
+                                    author = newsItem.author,
+                                    postDate = newsItem.publishDate,
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                                        .clickable {
+                                            navigateToDetailNews(newsItem)
+                                        }
+                                )
+                            }
+                        } ?: item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(R.string.no_news_for_today),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
+                            )
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(75.dp)) }
+                }
+                ScannerButtonComponent(
+                    modifier = Modifier.align(alignment = Alignment.BottomCenter)
+                ) {
+                    navigateToScannerPage()
+                }
             }
 
             if (state.isBottomSheetShow == true) {
@@ -220,7 +241,6 @@ fun TeacherDashboardPage(
                             data?.id?.let {
                                 dashboardViewModel.enrollTraining(trainingId = it)
                             }
-                            navigateToEnrollList()
                         },
                     )
                 }

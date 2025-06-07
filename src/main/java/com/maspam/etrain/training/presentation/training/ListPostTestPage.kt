@@ -180,13 +180,13 @@ fun ListPostTestPage(
                                         text = data.name ?: stringResource(R.string.section_name),
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                                         overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.padding(start = 15.dp)
+                                        modifier = Modifier.padding(start = 15.dp).weight(3f)
                                     )
                                     Box(modifier = Modifier.background(color = if (state.data?.postTest?.find { it.section == data.id } != null) {
                                         Color.Green.copy(alpha = 0.3f)
                                     } else {
                                         Color.Red.copy(alpha = 0.3f)
-                                    }, shape = RoundedCornerShape(12.dp))) {
+                                    }, shape = RoundedCornerShape(12.dp)).weight(1f)) {
                                         Text(
                                             text = if (state.data?.postTest?.find { it.section == data.id } != null) {
                                                 stringResource(R.string.completed)

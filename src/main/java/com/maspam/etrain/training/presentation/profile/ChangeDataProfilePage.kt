@@ -207,7 +207,7 @@ fun ChangeDataProfilePage(
                 label = stringResource(R.string.phone_number),
                 hint = stringResource(R.string.input_phone_number)
             ) {
-                changeUpdateDataProfileViewModel.onChangeAction(action = UpdateDataProfileFormEvent.AddressChange(it))
+                changeUpdateDataProfileViewModel.onChangeAction(action = UpdateDataProfileFormEvent.PhoneNumberChange(it))
             }
             // Date Picker
             DatePickerField(

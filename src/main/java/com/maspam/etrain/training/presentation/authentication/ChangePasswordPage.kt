@@ -28,6 +28,7 @@ import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.CustomButtonField
 import com.maspam.etrain.training.core.presentation.component.CustomTextPasswordField
 import com.maspam.etrain.training.core.presentation.component.LoadingScreen
+import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.presentation.authentication.component.Head
 import com.maspam.etrain.training.presentation.authentication.event.ChangePasswordFormEvent
@@ -49,7 +50,11 @@ fun ChangePasswordPage(
     }
 
     if (state.isSuccess == true) {
-        navigateToNextPage()
+        SuccessDialog(
+            message = stringResource(R.string.password_successfully_changed)
+        ) {
+            navigateToNextPage()
+        }
     }
 
     if (state.error != null) {

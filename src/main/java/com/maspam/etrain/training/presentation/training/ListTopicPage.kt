@@ -255,10 +255,11 @@ fun ListTopicPage(
                                         text = data.name ?: stringResource(R.string.section_name),
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                                         overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.padding(start = 15.dp)
+                                        modifier = Modifier.padding(start = 15.dp).weight(3f)
                                     )
                                     Row(
-                                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier.weight(1f)
                                     ) {
                                         Icon(
                                             modifier = Modifier

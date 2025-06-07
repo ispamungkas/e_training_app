@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -237,11 +238,13 @@ fun ListSectionPage(
                                     Text(
                                         text = data.name ?: stringResource(R.string.section_name),
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
-                                        overflow = TextOverflow.Ellipsis,
+                                        overflow = TextOverflow.Clip,
                                         modifier = Modifier.padding(start = 15.dp)
+                                            .weight(3f)
                                     )
                                     Row(
-                                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier.weight(1f)
                                     ) {
                                         Icon(
                                             modifier = Modifier
@@ -255,6 +258,7 @@ fun ListSectionPage(
                                             tint = MaterialTheme.colorScheme.primary,
                                             contentDescription = "Icon Trash"
                                         )
+                                        Spacer(modifier = Modifier.width(20.dp))
                                         Icon(
                                             modifier = Modifier
                                                 .size(20.dp)

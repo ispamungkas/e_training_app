@@ -1,5 +1,7 @@
 package com.maspam.etrain.training.core.presentation.utils
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -234,4 +236,17 @@ fun ControlWrapper(
 fun convertMillisToDate(millis: Long): String {
     val formatter = android.icu.text.SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
+}
+
+fun getFileSizeInMB(context: Context, uri: Uri): Double {
+    return try {
+        val sizeInBytes = context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
+            pfd.statSize
+        } ?: 0L
+
+        sizeInBytes.toDouble() / (1024 * 1024) // konversi ke MB
+    } catch (e: Exception) {
+        e.printStackTrace()
+        0.0
+    }
 }

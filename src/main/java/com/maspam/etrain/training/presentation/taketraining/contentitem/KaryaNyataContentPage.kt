@@ -17,17 +17,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarWithStartImage
+import com.maspam.etrain.training.core.presentation.utils.getFileSizeInMB
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -42,11 +50,27 @@ fun KaryaNyataContentPage(
     onMenuClicked: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     val singlePickFile = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { result ->
         result?.let {
-            onPickedFile(it)
+            val checkSize = getFileSizeInMB(context = context, uri = it)
+            if (checkSize > 5.0) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.file_size_more_than_5mb),
+                        actionLabel = context.getString(R.string.close),
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            } else {
+                onPickedFile(it)
+            }
         }
     }
 
@@ -62,6 +86,7 @@ fun KaryaNyataContentPage(
     Scaffold(
         modifier = modifier
             .systemBarsPadding(),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopBarWithStartImage(
                 name = "Karya Nyata"
@@ -155,7 +180,17 @@ fun KaryaNyataContentPage(
                         .height(60.dp)
                         .padding(top = 20.dp),
                     onClick = {
-                        submitKaryaNyata()
+                        if (file == null) {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "File ${context.getString(R.string.empty)}",
+                                    actionLabel = context.getString(R.string.close),
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+                        } else {
+                            submitKaryaNyata()
+                        }
                     }
                 ) {
                     Text(

@@ -1,5 +1,6 @@
 package com.maspam.etrain.training.presentation.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,9 +47,12 @@ fun ChangePasswordProfilePage(
 ) {
     Scaffold(
         modifier = modifier
-            .systemBarsPadding(),
+            .systemBarsPadding()
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
         topBar = {
             TopBarWithArrowComponent(
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
                 section = "Change Password",
                 onBackPress = onBackPressed
             )
@@ -80,6 +84,8 @@ fun ChangePasswordProfilePage(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             Column {
                 Row(
@@ -87,7 +93,7 @@ fun ChangePasswordProfilePage(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Lucide.Info, contentDescription = "Information")
+                    Icon(Lucide.Info, contentDescription = "Information", tint =  MaterialTheme.colorScheme.primary)
                     Text(
                         text = stringResource(R.string.confirm_new_password_information),
                         overflow = TextOverflow.Clip,

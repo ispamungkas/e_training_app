@@ -162,4 +162,7 @@
     <string name="point_to_barcode">Point to Barcode</string>
     <string name="_45_minutes">45 Minutes</string>
     <string name="post_test_successfully_updated">Post Test successfully updated</string>
+    <string name="no_content">No Content</string>
+    <string name="file_size_more_than_5mb">File size more than 5MB</string>
+    <string name="password_successfully_changed">Password successfully changed</string>
 </resources>

@@ -71,7 +71,7 @@ fun UserAccountComponent(
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        text = userModel.email ?: stringResource(R.string.email),
+                        text = userModel.nip ?: stringResource(R.string.email),
                         style = MaterialTheme.typography.bodySmall.copy( color = MaterialTheme.colorScheme.onBackground)
                     )
                 }

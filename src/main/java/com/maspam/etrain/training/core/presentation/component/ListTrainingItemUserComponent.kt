@@ -130,7 +130,7 @@ fun ListEnrollTrainingComponent(
                 text = nameTraining ?: stringResource(R.string.name_training),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Clip
             )
 
             Row(

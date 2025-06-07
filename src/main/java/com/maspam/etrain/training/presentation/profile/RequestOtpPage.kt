@@ -55,7 +55,7 @@ fun RequestOtpPage(
         modifier = modifier
             .systemBarsPadding(),
         topBar = {
-            TopBarWithArrowComponent(section = "ChangePassword", onBackPress = onBackPressed)
+            TopBarWithArrowComponent(section = "Change Password", onBackPress = onBackPressed)
         }
     ) { innerPadding ->
         Box(
@@ -72,7 +72,7 @@ fun RequestOtpPage(
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
                 )
                 CustomTextField(
-                    valueInput = "MrLmens@gmail.com",
+                    valueInput = state.user?.email ?: "Email",
                     readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()

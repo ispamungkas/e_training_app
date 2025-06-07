@@ -161,4 +161,7 @@
     <string name="point_to_barcode">Arahkan pada barcode</string>
     <string name="_45_minutes">45 Menit</string>
     <string name="post_test_successfully_updated">Post Test berhasil terupdate</string>
+    <string name="no_content">Tidak ada konten</string>
+    <string name="file_size_more_than_5mb">Ukuran file lebih dari 5MB</string>
+    <string name="password_successfully_changed">Password berhasil terubah</string>
 </resources>

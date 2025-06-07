@@ -1,10 +1,12 @@
 package com.maspam.etrain.training.presentation.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.Scaffold
@@ -71,15 +73,18 @@ fun VerificationOtpPage(
 
     Scaffold (
         modifier = modifier
-            .systemBarsPadding(),
+            .systemBarsPadding()
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
         topBar = {
             TopBarWithArrowComponent(
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
                 section = "Change Password",
                 onBackPress = onBackPressed
             )
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize().background(color = MaterialTheme.colorScheme.background)) {
             Column(
                 modifier = Modifier,
             ) {

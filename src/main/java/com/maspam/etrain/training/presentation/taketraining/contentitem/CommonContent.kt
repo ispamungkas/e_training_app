@@ -115,16 +115,17 @@ fun CommonContentPage(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .padding(
-                                    horizontal = 20.dp,
                                     vertical = 25.dp
                                 )
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 25.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
+                                    modifier = Modifier.weight(2f),
                                     text = topicModel.name ?: "Topic Name",
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontSize = 18.sp,
@@ -132,7 +133,9 @@ fun CommonContentPage(
                                     )
                                 )
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.End
                                 ) {
                                     Icon(
                                         imageVector = Lucide.Timer,
@@ -149,19 +152,19 @@ fun CommonContentPage(
                             Divider(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 15.dp)
+                                    .padding(top = 20.dp)
                             )
                             key(topicModel.id) {
                                 HtmlText(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    html = sanitizeHtml(topicModel.content ?: "Topic Content")
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),
+                                    html = sanitizeHtml(topicModel.content ?: stringResource(R.string.no_content))
                                 )
                             }
 
                             if (!isCheck) {
                                 Box(
                                     modifier = Modifier
-
+                                        .padding(horizontal = 20.dp)
                                         .background(
                                             Color.Green.copy(alpha = 0.1f),
                                             shape = RoundedCornerShape(15.dp)

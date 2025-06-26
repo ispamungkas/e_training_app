@@ -86,3 +86,62 @@ fun UserAccountComponent(
         }
     }
 }
+
+@Composable
+fun UserAccountReport(
+    userModel: UserModel,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 5.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AsyncImage(
+                    model = constructUrl(userModel.imageProfile ?: ""),
+                    contentDescription = "user image",
+                    error = painterResource(R.drawable.profile_default),
+                    placeholder = painterResource(R.drawable.profile_default),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(shape = RoundedCornerShape(100))
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = userModel.name ?: stringResource(R.string.username),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground)
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = userModel.nip ?: stringResource(R.string.email),
+                        style = MaterialTheme.typography.bodySmall.copy( color = MaterialTheme.colorScheme.onBackground)
+                    )
+                }
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "${userModel.enrolls?.size ?: 0} Training" ?: stringResource(R.string.username),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onBackground)
+                )
+            }
+        }
+    }
+}

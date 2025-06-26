@@ -164,4 +164,11 @@
     <string name="no_content">Tidak ada konten</string>
     <string name="file_size_more_than_5mb">Ukuran file lebih dari 5MB</string>
     <string name="password_successfully_changed">Password berhasil terubah</string>
+    <string name="input_grade">Masukan Nilai</string>
+    <string name="input_link_video">Masukan tautan video</string>
+    <string name="report">Laporan</string>
+    <string name="grade">Nilai : %1$s</string>
+    <string name="add_news">Tambah News</string>
+    <string name="edit_news">Ubah News</string>
+    <string name="image_size_more_than_2mb">Besar gambar lebih dari 2MB</string>
 </resources>

@@ -6,8 +6,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +45,7 @@ fun KaryaNyataContentPage(
     modifier: Modifier = Modifier,
     karyaNyataStatus: String?,
     file: Uri? = null,
+    grade: String? = null,
     isSuccess: Boolean,
     onDismissDialog: () -> Unit,
     onPickedFile: (Uri) -> Unit,
@@ -108,35 +111,57 @@ fun KaryaNyataContentPage(
                     text = "Please input your assignment for “Karya Nyata” that contain on this training material !!!",
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                 )
-                Box(
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .background(
-                            color = when (karyaNyataStatus ?: "") {
-                                "pending" -> Color.Yellow.copy(0.1f)
-                                "decline" -> Color.Red.copy(0.1f)
-                                "accepted" -> Color.Green.copy(0.1f)
-                                else -> Color.Yellow.copy(0.1f)
-                            },
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .align(alignment = Alignment.End)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(horizontal = 15.dp, 10.dp)
-                            .align(alignment = Alignment.Center),
-                        text =  if (karyaNyataStatus?.isEmpty() == true) "Not Submitted" else karyaNyataStatus ?: "" ,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
-                            color = when (karyaNyataStatus) {
-                                "pending" -> Color.Yellow
-                                "decline" -> Color.Red
-                                "accepted" -> Color.Green
-                                else -> Color.Yellow
-                            },
+                    grade?.let {
+                        Text(
+                            text = stringResource(R.string.grade, it),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        )
+                    } ?: Text(
+                        text = stringResource(R.string.grade, "-"),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Normal,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     )
+                    Box(
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .background(
+                                color = when (karyaNyataStatus ?: "") {
+                                    "pending" -> Color.Yellow.copy(0.1f)
+                                    "decline" -> Color.Red.copy(0.1f)
+                                    "accepted" -> Color.Green.copy(0.1f)
+                                    else -> Color.Yellow.copy(0.1f)
+                                },
+                                shape = RoundedCornerShape(15.dp)
+                            )
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 15.dp, 10.dp)
+                                .align(alignment = Alignment.Center),
+                            text = if (karyaNyataStatus?.isEmpty() == true) "Not Submitted" else karyaNyataStatus
+                                ?: "",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Medium,
+                                color = when (karyaNyataStatus) {
+                                    "pending" -> Color.Yellow
+                                    "decline" -> Color.Red
+                                    "accepted" -> Color.Green
+                                    else -> Color.Yellow
+                                },
+                            )
+                        )
+                    }
+
                 }
                 Box(
                     modifier = Modifier

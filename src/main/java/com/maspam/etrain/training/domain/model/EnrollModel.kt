@@ -20,4 +20,5 @@ data class EnrollModel(
     } ?: false,
 
     val trainingDetail: TrainingModel? = null,
+    val grade: String? = null,
 )

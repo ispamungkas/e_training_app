@@ -25,7 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.maspam.etrain.R
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeVersion2Formatter
+import com.maspam.etrain.training.core.networking.constructUrl
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 
 @Composable
 fun NewsItemComponent(
@@ -40,8 +41,9 @@ fun NewsItemComponent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = image ?: R.drawable.news_image_sample,
+            model = constructUrl(image ?: ""),
             contentScale = ContentScale.Crop,
+            error = painterResource(R.drawable.news_image_sample),
             contentDescription = "News Image",
             modifier = Modifier
                 .size(110.dp)
@@ -78,7 +80,7 @@ fun NewsItemComponent(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = "${author ?: stringResource(R.string.author)} ~ ${
-                        postDate?.toDateTimeVersion2Formatter() ?: stringResource(
+                        convertMillisToDate(postDate ?: 0) ?: stringResource(
                             R.string.xx_january_xxxx
                         )
                     }",

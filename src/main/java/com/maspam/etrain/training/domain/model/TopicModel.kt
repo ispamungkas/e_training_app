@@ -8,5 +8,6 @@ data class TopicModel(
     val sectionId: Int? = 0,
     val name: String? = "",
     val content: String? = "",
-    val topicImage: String? = ""
+    val topicImage: String? = "",
+    val linkVideo: String? = ""
 )

@@ -27,9 +27,11 @@ import com.maspam.etrain.training.presentation.enroll.viewmodel.EnrollViewModel
 import com.maspam.etrain.training.presentation.enroll.viewmodel.ListEnrollProfileViewModel
 import com.maspam.etrain.training.presentation.karyanyata.viewmodel.KaryaNyataViewModel
 import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
+import com.maspam.etrain.training.presentation.news.viewmodel.NewsViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.ProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdateDataProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdatePasswordProfileViewModel
+import com.maspam.etrain.training.presentation.report.ReportViewModel
 import com.maspam.etrain.training.presentation.scanner.ScannerViewModel
 import com.maspam.etrain.training.presentation.taketraining.viewmodel.TakeTrainingViewModel
 import com.maspam.etrain.training.presentation.training.viewmodel.DetailTrainingViewModel
@@ -79,4 +81,6 @@ val appModule = module {
     viewModelOf(::KaryaNyataViewModel)
     viewModelOf(::UserAccountViewModel)
     viewModelOf(::ScannerViewModel)
+    viewModelOf(::ReportViewModel)
+    viewModelOf(::NewsViewModel)
 }

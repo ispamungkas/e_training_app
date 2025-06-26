@@ -14,6 +14,9 @@ data class TopicDto(
     val content: String?,
     val img: String?,
 
+    @SerialName("link_video")
+    val linkVideo: String?,
+
     @SerialName("created_at")
     val createdAt: Int?,
 

@@ -175,6 +175,139 @@ fun ListEnrollTrainingComponent(
 }
 
 @Composable
+fun ListEnrollTrainingComponentWithGrade(
+    data: EnrollModel? = null,
+    id: Int? = null,
+    imageUri: String? = "",
+    typeTraining: String? = "",
+    typeTrainingCategory: String? = "",
+    due: Long? = null,
+    status: String? = "",
+    nameTraining: String? = "",
+    modifier: Modifier = Modifier,
+    grade: String?,
+) {
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        // Image Training
+        AsyncImage(
+            modifier = Modifier
+                .padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
+                .size(100.dp)
+                .clip(shape = RoundedCornerShape(15.dp)),
+            model = imageUri?.let {
+                constructUrl(it)
+            } ?: R.drawable.image_training_sample,
+            error = painterResource(R.drawable.image_training_sample),
+            contentDescription = "Image Training",
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Training Info
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .padding(end = 20.dp, top = 10.dp, bottom = 10.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.2f),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(12.dp),
+                        painter = painterResource(R.drawable.icon_category),
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = "Icon Category"
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = typeTraining ?: stringResource(R.string.type_training),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                        painter = painterResource(R.drawable.icon_time),
+                        contentDescription = "Icon Category"
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = due?.let { convertMillisToDate(it) } ?: stringResource(R.string.due_date),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
+                    )
+                }
+            }
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f),
+                text = nameTraining ?: stringResource(R.string.name_training),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                maxLines = 2,
+                overflow = TextOverflow.Clip
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.2f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                        painter = painterResource(R.drawable.icon_location),
+                        contentDescription = "Icon Location"
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = typeTrainingCategory ?: stringResource(R.string.implementation),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Light)
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(20.dp))
+                ) {
+                    Text(
+                        text = stringResource(R.string.grade, grade ?: "-"),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Medium,
+                        ),
+                        modifier = Modifier.padding(horizontal = 13.dp, vertical = 3.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun statusToStringRes(status: String): String {
     return when (status) {
         "progress" -> stringResource(R.string.on_process)

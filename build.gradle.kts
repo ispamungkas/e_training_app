@@ -10,6 +10,13 @@ android {
     namespace = "com.maspam.etrain"
     compileSdk = 35
 
+    packaging {
+        resources {
+            excludes += "META-INF/native-image/resource-config.json"
+            excludes += "META-INF/native-image/reflect-config.json"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.maspam.etrain"
         minSdk = 24
@@ -22,7 +29,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"https://5a8f-180-254-76-102.ngrok-free.app/\"")
+            buildConfigField("String", "BASE_URL", "\"https://3816-114-124-204-167.ngrok-free.app/\"")
         }
         release {
             isMinifyEnabled = false
@@ -88,6 +95,11 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.3.1")
     implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0")
     implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha02")
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+    implementation("com.itextpdf:itext7-core:8.0.4")
+    implementation("com.itextpdf:layout:8.0.4")
+    implementation("com.itextpdf:kernel:8.0.4")
+    implementation("com.itextpdf:io:8.0.4")
 
 
     testImplementation(libs.junit)

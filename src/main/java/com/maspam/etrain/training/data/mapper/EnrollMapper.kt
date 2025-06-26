@@ -22,6 +22,7 @@ fun EnrollDto.toEnrollModel(): EnrollModel {
         pLearn = this.pLearn,
         sLearn = this.sLearn,
         karyaNyataModel = if(this.karyanyata?.isEmpty() == true) KaryaNyataModel() else this.karyanyata?.first()?.toKaryaNyataModel(),
+        grade = this.grade
     )
 }
 
@@ -38,6 +39,6 @@ fun KaryaNyataDto.toKaryaNyataModel(): KaryaNyataModel {
         status = this.status,
         att = this.att,
         user = this.user,
-        enroll = this.enroll
+        enroll = this.enroll,
     )
 }

@@ -206,6 +206,7 @@ fun TakeTrainingPage(
                         karyaNyataStatus = state.data?.karyaNyataModel?.status,
                         isSuccess = state.isSuccess,
                         file = state.file,
+                        grade = state.data?.grade,
                         onPickedFile = {
                             takeTrainingViewModel.setFileUri(it)
                         },

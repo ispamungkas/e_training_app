@@ -115,7 +115,7 @@ class KaryaNyataViewModel(
         }
     }
 
-    fun updateKaryaNyata(status: String) {
+    fun updateKaryaNyata(status: String, grade: String?) {
         _state.update {
             it.copy(
                 isLoading = true
@@ -126,7 +126,8 @@ class KaryaNyataViewModel(
                 token = userSessionDataSource.getToken(),
                 karyaNyataId = _state.value.karyaNyata?.id ?: 0,
                 enrollId = _state.value.karyaNyata?.enroll ?: 0,
-                status = status
+                status = status,
+                grade = grade
             )
                 .onError { e ->
                     _state.update {
@@ -156,6 +157,14 @@ class KaryaNyataViewModel(
         _state.update {
             it.copy(
                 error = e
+            )
+        }
+    }
+
+    fun setGrade(value: String) {
+        _state.update {
+            it.copy(
+                grade = value
             )
         }
     }

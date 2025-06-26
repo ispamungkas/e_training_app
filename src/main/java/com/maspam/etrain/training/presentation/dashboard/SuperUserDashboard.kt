@@ -209,11 +209,11 @@ fun SuperUserDashboardPage(
 
                     item { Spacer(modifier = Modifier.height(75.dp)) }
                 }
-                ScannerButtonComponent(
-                    modifier = Modifier.align(alignment = Alignment.BottomCenter)
-                ) {
-                    navigateToScannerPage()
-                }
+//                ScannerButtonComponent(
+//                    modifier = Modifier.align(alignment = Alignment.BottomCenter)
+//                ) {
+//                    navigateToScannerPage()
+//                }
             }
         }
     }

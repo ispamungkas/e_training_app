@@ -28,7 +28,8 @@ fun TrainingDto.toTrainingModel(): TrainingModel {
         },
         postTest = this.postTest?.map {
             it.toPostTestModel()
-        }
+        },
+        createdAt = this.createdAt
     )
 }
 
@@ -52,5 +53,6 @@ fun TopicDto.toTopicModel(): TopicModel {
         content = this.content,
         sectionId = this.sectionId,
         topicImage = this.img,
+        linkVideo = this.linkVideo
     )
 }

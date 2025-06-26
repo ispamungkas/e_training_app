@@ -62,6 +62,12 @@ class ListNewsViewModel(
         }
     }
 
+    fun refresh() {
+        _state.update{
+            it.copy(isRefresh = true)
+        }
+    }
+
     fun setError(e: NetworkError?) {
         _state.update { it.copy(
             error = e

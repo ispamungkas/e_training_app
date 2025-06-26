@@ -8,6 +8,7 @@ import com.maspam.etrain.training.domain.model.NewsModel
 data class NewsState(
     val isLoading: Boolean = false,
     val error: NetworkError? = null,
+    val isRefresh: Boolean = false,
 
     val listNews: List<NewsModel>? = null,
     val selectedTraining: NewsModel? = null

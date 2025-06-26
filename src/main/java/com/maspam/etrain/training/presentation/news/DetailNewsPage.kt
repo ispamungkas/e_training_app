@@ -25,8 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
-import com.maspam.etrain.training.core.presentation.utils.toDateTimeVersion2Formatter
+import com.maspam.etrain.training.core.presentation.utils.convertMillisToDate
 
 @Composable
 fun DetailNewsPage(
@@ -64,7 +65,7 @@ fun DetailNewsPage(
                     .align(alignment = Alignment.TopCenter)
             ) {
                 AsyncImage(
-                    model = newsImage,
+                    model = constructUrl(newsImage),
                     contentDescription = "Image Training",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -93,7 +94,7 @@ fun DetailNewsPage(
                         overflow = TextOverflow.Clip,
                     )
                     Text(
-                        text = newsPublish.toDateTimeVersion2Formatter(),
+                        text = convertMillisToDate(newsPublish),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                         overflow = TextOverflow.Clip,
                     )

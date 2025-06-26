@@ -51,7 +51,7 @@ class RemoteAuthenticationDataSource(
         }
     }
 
-    override suspend fun register(nip: String, name: String, isHead: Boolean): Result<UserModel, NetworkError> {
+    override suspend fun register(nip: String, name: String, role: String): Result<UserModel, NetworkError> {
         return safeCall <BaseDto<UserDto>>{
             httpClient.post(
                 urlString = constructUrl(url = "/register/")
@@ -60,7 +60,7 @@ class RemoteAuthenticationDataSource(
                 setBody(RegisterBody(
                     nip = nip,
                     name = name,
-                    ishead = isHead
+                    role = role
                 ))
             }
         }.map { response ->

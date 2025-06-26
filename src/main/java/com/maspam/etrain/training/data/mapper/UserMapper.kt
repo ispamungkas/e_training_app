@@ -36,5 +36,6 @@ fun UserDto.toUserModel(): UserModel {
         dayOfBirth = this.dob,
         role = this.role,
         imageProfile = this.imgProfile,
+        enrolls = this.enrolls?.map { it.toEnrollModel() }
     )
 }

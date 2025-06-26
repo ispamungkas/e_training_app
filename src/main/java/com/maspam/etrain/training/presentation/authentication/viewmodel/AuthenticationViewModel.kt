@@ -70,10 +70,10 @@ class AuthenticationViewModel(
                 }
             }
 
-            is AuthenticationFormEvent.IsHeadChange -> {
+            is AuthenticationFormEvent.RoleChanged -> {
                 _state.update {
                     it.copy(
-                        isHeadCheck = event.check
+                        role = event.role
                     )
                 }
             }
@@ -162,7 +162,7 @@ class AuthenticationViewModel(
             authenticationDataSource.register(
                 nip = _state.value.nip ?: "",
                 name = _state.value.name ?: "",
-                isHead = _state.value.isHeadCheck ?: false
+                role = _state.value.role ?: "Teacher"
             )
                 .onSuccess { res ->
                     _state.update {
@@ -205,7 +205,6 @@ class AuthenticationViewModel(
     fun getUser() {
         viewModelScope.launch {
             val data = userSessionDataSource.getUserSession()
-            println("viewModel $data")
             _initialState.update {
                 it.copy(userSession = data)
             }

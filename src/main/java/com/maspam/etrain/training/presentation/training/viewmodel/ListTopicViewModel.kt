@@ -57,6 +57,14 @@ class ListTopicViewModel(
             is FormTopicTrainingEvent.Submit -> {
                 updateTopic(action.topicBody)
             }
+
+            is FormTopicTrainingEvent.LinkVideoChange -> _state.update { data ->
+                data.copy(
+                    selectedData = data.selectedData?.copy(
+                        linkVideo = action.link
+                    )
+                )
+            }
         }
     }
 

@@ -165,4 +165,11 @@
     <string name="no_content">No Content</string>
     <string name="file_size_more_than_5mb">File size more than 5MB</string>
     <string name="password_successfully_changed">Password successfully changed</string>
+    <string name="input_grade">Input Grade</string>
+    <string name="input_link_video">Input link video</string>
+    <string name="report">Report</string>
+    <string name="grade">Grade : %1$s</string>
+    <string name="add_news">Add News</string>
+    <string name="edit_news">Edit News</string>
+    <string name="image_size_more_than_2mb">Image size more than 2MB</string>
 </resources>

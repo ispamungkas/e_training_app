@@ -16,6 +16,8 @@ class RemoteUserSessionDataSource(
             "Super User"
         } else if (data.role == "Head School") {
             "Head School"
+        } else if (data.role == "Kepala Bidang") {
+            "Kepala Bidang"
         } else {
             "Teacher"
         }

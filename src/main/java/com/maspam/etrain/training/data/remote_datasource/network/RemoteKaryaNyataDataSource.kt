@@ -97,38 +97,52 @@ class RemoteKaryaNyataDataSource(
         token: String,
         karyaNyataId: Int,
         enrollId: Int,
-        status: String
+        status: String,
+        grade: String?
     ): Result<KaryaNyataModel, NetworkError> {
-        val body = mapOf(
-            "status" to status,
+        val body = mutableMapOf<String, Any?>(
+            "grade" to grade
         )
 
-        val body2 = mapOf(
-            "t_karya_nyata" to if (status == "accepted") {
-                false
-            } else {
-                true
-            }
+        val statusBody = mapOf(
+            "status" to status
         )
-        safeCall <BaseDto<EnrollDto>>{
+
+        val tKaryaNyataBody = mapOf(
+            "t_karya_nyata" to (status != "accepted")
+        )
+
+        print(status != "accepted")
+
+        val combinedBodyForEnroll = mutableMapOf<String, Any?>().apply {
+            putAll(tKaryaNyataBody)
+        }
+
+        val data = safeCall<BaseDto<EnrollDto>> {
             httpClient.patch(
                 urlString = constructUrl("/enroll/$enrollId"),
             ) {
                 bearerAuth(token = token)
-                setBody(body2)
+                setBody(combinedBodyForEnroll)
             }
         }
 
-        return safeCall <BaseDto<KaryaNyataDto>>{
+        return safeCall<BaseDto<KaryaNyataDto>> {
+            val combinedBodyForKaryaNyata = mutableMapOf<String, Any?>().apply {
+                putAll(statusBody)
+                putAll(body)
+            }
+
             httpClient.patch(
                 urlString = constructUrl("/karyanyata/$karyaNyataId"),
             ) {
                 bearerAuth(token = token)
-                setBody(body)
+                setBody(combinedBodyForKaryaNyata)
             }
         }.map { response ->
             response.data?.toKaryaNyataModel() ?: KaryaNyataModel()
         }
+
     }
 
     override suspend fun updateAttKaryaNyata(

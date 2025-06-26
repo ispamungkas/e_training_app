@@ -43,6 +43,9 @@ object TeacherDashboardScreen
 object HeadSchoolDashboardScreen
 
 @Serializable
+object KabidDashboardScreen
+
+@Serializable
 object SuperUserDashboardScreen
 
 @Serializable
@@ -92,6 +95,14 @@ object ListEnrollTrainingProfileScreen
 @Serializable
 data class DetailEnrollTrainingScreen(
     val enrolModel: EnrollModel
+)
+
+@Serializable
+object Report
+
+@Serializable
+data class DetailReportScreen (
+    val userModel: UserModel
 )
 
 /**
@@ -182,5 +193,20 @@ object ListUserAccountScreen
 
 @Serializable
 object ScannerScreen
+
+/**
+ * News Screen
+ */
+
+@Serializable
+object KabidListNewsScreen
+
+@Serializable
+object AddNewsScreen
+
+@Serializable
+data class EditNewsScreen(
+    val newsModel: NewsModel
+)
 
 

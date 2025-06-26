@@ -24,14 +24,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.maspam.etrain.training.core.presentation.utils.AddNewsScreen
 import com.maspam.etrain.training.core.presentation.utils.ChangePasswordProfileScreen
 import com.maspam.etrain.training.core.presentation.utils.ChangePasswordScreen
 import com.maspam.etrain.training.core.presentation.utils.CustomNavType
 import com.maspam.etrain.training.core.presentation.utils.DetailEnrollTrainingScreen
 import com.maspam.etrain.training.core.presentation.utils.DetailKaryaNyataScreen
 import com.maspam.etrain.training.core.presentation.utils.DetailNewsScreen
+import com.maspam.etrain.training.core.presentation.utils.DetailReportScreen
 import com.maspam.etrain.training.core.presentation.utils.DetailTrainingKNScreen
 import com.maspam.etrain.training.core.presentation.utils.DetailTrainingScreen
+import com.maspam.etrain.training.core.presentation.utils.EditNewsScreen
 import com.maspam.etrain.training.core.presentation.utils.EditProfileScreen
 import com.maspam.etrain.training.core.presentation.utils.ForgotPasswordScreen
 import com.maspam.etrain.training.core.presentation.utils.FormAddPostTestScreen
@@ -41,6 +44,8 @@ import com.maspam.etrain.training.core.presentation.utils.FormUpdateTopicScreen
 import com.maspam.etrain.training.core.presentation.utils.HeadSchoolDashboardScreen
 import com.maspam.etrain.training.core.presentation.utils.InformationScreen
 import com.maspam.etrain.training.core.presentation.utils.InitialScreen
+import com.maspam.etrain.training.core.presentation.utils.KabidDashboardScreen
+import com.maspam.etrain.training.core.presentation.utils.KabidListNewsScreen
 import com.maspam.etrain.training.core.presentation.utils.ListEnrollTrainingProfileScreen
 import com.maspam.etrain.training.core.presentation.utils.ListNewsScreen
 import com.maspam.etrain.training.core.presentation.utils.ListOpenTrainingScreen
@@ -56,6 +61,7 @@ import com.maspam.etrain.training.core.presentation.utils.OTPScreen
 import com.maspam.etrain.training.core.presentation.utils.OTPValidateProfileScreen
 import com.maspam.etrain.training.core.presentation.utils.ProfileScreen
 import com.maspam.etrain.training.core.presentation.utils.RegisterScreen
+import com.maspam.etrain.training.core.presentation.utils.Report
 import com.maspam.etrain.training.core.presentation.utils.ScannerScreen
 import com.maspam.etrain.training.core.presentation.utils.SuperUserDashboardScreen
 import com.maspam.etrain.training.core.presentation.utils.TakeTrainingScreen
@@ -78,6 +84,7 @@ import com.maspam.etrain.training.presentation.authentication.viewmodel.ChangePa
 import com.maspam.etrain.training.presentation.authentication.viewmodel.ForgotPasswordViewModel
 import com.maspam.etrain.training.presentation.authentication.viewmodel.OTPViewModel
 import com.maspam.etrain.training.presentation.dashboard.HeadSchoolDashboardPage
+import com.maspam.etrain.training.presentation.dashboard.KabidDashboardPage
 import com.maspam.etrain.training.presentation.dashboard.SuperUserDashboardPage
 import com.maspam.etrain.training.presentation.dashboard.TeacherDashboardPage
 import com.maspam.etrain.training.presentation.dashboard.extended.ListOpenTrainingPage
@@ -94,8 +101,12 @@ import com.maspam.etrain.training.presentation.karyanyata.DetailTrainingKNPage
 import com.maspam.etrain.training.presentation.karyanyata.ListTrainingKNPage
 import com.maspam.etrain.training.presentation.karyanyata.viewmodel.KaryaNyataViewModel
 import com.maspam.etrain.training.presentation.news.DetailNewsPage
+import com.maspam.etrain.training.presentation.news.FormAddNewsPage
+import com.maspam.etrain.training.presentation.news.FormEditNewsPage
+import com.maspam.etrain.training.presentation.news.KabidListNewsPage
 import com.maspam.etrain.training.presentation.news.ListNewsPage
 import com.maspam.etrain.training.presentation.news.viewmodel.ListNewsViewModel
+import com.maspam.etrain.training.presentation.news.viewmodel.NewsViewModel
 import com.maspam.etrain.training.presentation.profile.ChangeDataProfilePage
 import com.maspam.etrain.training.presentation.profile.ChangePasswordProfilePage
 import com.maspam.etrain.training.presentation.profile.InformationPage
@@ -105,6 +116,9 @@ import com.maspam.etrain.training.presentation.profile.VerificationOtpPage
 import com.maspam.etrain.training.presentation.profile.viewmodel.ProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdateDataProfileViewModel
 import com.maspam.etrain.training.presentation.profile.viewmodel.UpdatePasswordProfileViewModel
+import com.maspam.etrain.training.presentation.report.DetailReportPage
+import com.maspam.etrain.training.presentation.report.ReportPage
+import com.maspam.etrain.training.presentation.report.ReportViewModel
 import com.maspam.etrain.training.presentation.scanner.ScannerPage
 import com.maspam.etrain.training.presentation.scanner.ScannerViewModel
 import com.maspam.etrain.training.presentation.taketraining.TakeTrainingPage
@@ -176,6 +190,13 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             }
                                         }
+                                        "Kepala Bidang" -> {
+                                            navController.navigate(KabidDashboardScreen) {
+                                                popUpTo(InitialScreen) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
                                         "Teacher" -> {
                                             navController.navigate(TeacherDashboardScreen) {
                                                 popUpTo(InitialScreen) {
@@ -224,6 +245,13 @@ class MainActivity : ComponentActivity() {
                                         }
                                         "Teacher" -> {
                                             navController.navigate(TeacherDashboardScreen) {
+                                                popUpTo(LoginScreen) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                        "Kepala Bidang" -> {
+                                            navController.navigate(KabidDashboardScreen) {
                                                 popUpTo(LoginScreen) {
                                                     inclusive = true
                                                 }
@@ -429,11 +457,51 @@ class MainActivity : ComponentActivity() {
                                         }
                                     }
                                 },
-                                navigateToListTrainingManajement = {
-                                    navController.navigate(ListTrainingScreen)
+                                navigateToReport = {
+                                    navController.navigate(Report)
                                 },
                                 navigateToKaryaNyataManajement = {
                                     navController.navigate(ListTrainingKNScreen)
+                                },
+                                navigateToScannerPage = {
+                                    navController.navigate(ScannerScreen)
+                                }
+                            )
+                        }
+                        composable<KabidDashboardScreen> {
+                            KabidDashboardPage(
+                                dashboardViewModel = koinViewModel<DashboardViewModel>(),
+                                onProfileClicked = {
+                                    navController.navigate(ProfileScreen)
+                                },
+                                navigateToEnrollList = {
+                                    navController.navigate(ListEnrollTrainingProfileScreen)
+                                },
+                                navigateToListOpenTraining = {
+                                    navController.navigate(ListOpenTrainingScreen)
+                                },
+                                navigateToListNews = {
+                                    navController.navigate(ListNewsScreen)
+                                },
+                                navigateToDetailNews = {
+                                    navController.navigate(
+                                        DetailNewsScreen(
+                                            newsModel = it
+                                        )
+                                    )
+                                },
+                                navigateToLoginPage = {
+                                    navController.navigate(LoginScreen) {
+                                        popUpTo(InitialScreen) {
+                                            inclusive = true
+                                        }
+                                    }
+                                },
+                                navigateToListTrainingManajement = {
+                                    navController.navigate(ListTrainingScreen)
+                                },
+                                navigateToKabidListNews = {
+                                    navController.navigate(KabidListNewsScreen)
                                 },
                                 navigateToScannerPage = {
                                     navController.navigate(ScannerScreen)
@@ -1054,6 +1122,82 @@ class MainActivity : ComponentActivity() {
                                         cameraPermission.launch(Manifest.permission.CAMERA)
                                     }
                                 }
+                            }
+                        }
+
+                        composable<Report> {
+                            ReportPage(
+                                reportViewModel = koinViewModel<ReportViewModel>(),
+                                navigateToLoginPage = {
+                                    navController.navigate(LoginScreen) {
+                                        popUpTo(LoginScreen) {
+                                            inclusive = false
+                                        }
+                                    }
+                                }
+                            ) { userModel ->
+                                navController.navigate(DetailReportScreen(userModel = userModel))
+                            }
+                        }
+
+                        composable<DetailReportScreen>(
+                            typeMap = mapOf(
+                                typeOf<UserModel>() to CustomNavType.userModelType
+                            )
+                        ) {
+                            val data = it.toRoute<DetailReportScreen>()
+                            DetailReportPage(
+                                userModel = data.userModel
+                            )
+                        }
+
+                        composable<KabidListNewsScreen> {
+                            KabidListNewsPage(
+                                listNewsViewModel = koinViewModel<ListNewsViewModel>(),
+                                navigateToFormEdit = {
+                                    navController.navigate(EditNewsScreen(it))
+                                },
+                                onBackPressed = {
+                                    navController.navigateUp()
+                                }
+                            ) {
+                                navController.navigate(AddNewsScreen)
+                            }
+                        }
+
+                        composable<AddNewsScreen> {
+                            FormAddNewsPage(
+                                newsViewModel = koinViewModel<NewsViewModel>(),
+                                navigateToLoginPage = {
+                                    navController.navigate(LoginScreen) {
+                                        popUpTo(LoginScreen) {
+                                            inclusive = false
+                                        }
+                                    }
+                                }
+                            ) {
+                                navController.navigateUp()
+                            }
+                        }
+
+                        composable<EditNewsScreen>(
+                            typeMap = mapOf(
+                                typeOf<NewsModel>() to CustomNavType.newsModel
+                            )
+                        ) {
+                            val data = it.toRoute<EditNewsScreen>().newsModel
+                            FormEditNewsPage(
+                                newsViewModel = koinViewModel<NewsViewModel>(),
+                                newsModel = data,
+                                navigateToLoginPage = {
+                                    navController.navigate(LoginScreen) {
+                                        popUpTo(LoginScreen) {
+                                            inclusive = false
+                                        }
+                                    }
+                                }
+                            ) {
+                                navController.navigateUp()
                             }
                         }
                     }

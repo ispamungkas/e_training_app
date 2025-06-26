@@ -64,7 +64,11 @@ class DashboardViewModel(
                 .onSuccess { result ->
                     _state.update {
                         it.copy(
-                            news = result.slice(0..3)
+                            news = if (result.size > 5) {
+                                result.slice(0..3)
+                            } else {
+                                result
+                            }
                         )
                     }
                 }

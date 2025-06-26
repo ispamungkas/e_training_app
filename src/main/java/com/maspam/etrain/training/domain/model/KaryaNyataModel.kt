@@ -8,5 +8,6 @@ data class KaryaNyataModel (
     val att: String? = "",
     val status: String? = "",
     val enroll: Int? = 0,
-    val user: Int? = 0
+    val user: Int? = 0,
+    val grade: String? = ""
 )

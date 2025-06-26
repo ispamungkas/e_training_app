@@ -9,10 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -122,26 +127,68 @@ fun RegisterPage(
             ) {
                 authenticationViewModel.onEvent(event = AuthenticationFormEvent.NameChanged(it))
             }
-            Row(
+            Box(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(
-                    checked = state.isHeadCheck ?: false,
-                    onCheckedChange = {
-                        authenticationViewModel.onEvent(
-                            event = AuthenticationFormEvent.IsHeadChange(
-                                it
+                OutlinedTextField(
+                    value = state.role ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = {
+                        Text("Select Position", style = MaterialTheme.typography.labelMedium) },
+                    trailingIcon = {
+                        IconButton(onClick = { state.expanded = !state.expanded }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Dropdown"
                             )
-                        )
-                    }
-                )
-                Text(
-                    text = stringResource(R.string.create_account_for_teacher),
-                    style = MaterialTheme.typography.labelMedium
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
 
+                DropdownMenu (
+                    expanded = state.expanded,
+                    onDismissRequest = { state.expanded = false }
+                ) {
+                    state.options.forEach { label ->
+                        DropdownMenuItem(
+                            onClick = {
+                                state.expanded = false
+                                authenticationViewModel.onEvent(
+                                    AuthenticationFormEvent.RoleChanged(label)
+                                )
+                            },
+                            text = {
+                                Text(
+                                    label,
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
+                        )
+                    }
+                }
             }
+//            Row(
+//                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Checkbox(
+//                    checked = state.isHeadCheck ?: false,
+//                    onCheckedChange = {
+//                        authenticationViewModel.onEvent(
+//                            event = AuthenticationFormEvent.IsHeadChange(
+//                                it
+//                            )
+//                        )
+//                    }
+//                )
+//                Text(
+//                    text = stringResource(R.string.create_account_for_teacher),
+//                    style = MaterialTheme.typography.labelMedium
+//                )
+//
+//            }
             CustomButtonField(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp),
                 buttonName = stringResource(R.string.submit),

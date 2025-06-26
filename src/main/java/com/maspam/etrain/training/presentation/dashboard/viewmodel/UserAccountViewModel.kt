@@ -101,7 +101,7 @@ class UserAccountViewModel(
         _state.update {
             it.copy(
                 filteredData = _state.value.data?.filter { data ->
-                    data.name?.contains(value) == true
+                    data.name?.contains(value, true) == true
                 }
             )
         }

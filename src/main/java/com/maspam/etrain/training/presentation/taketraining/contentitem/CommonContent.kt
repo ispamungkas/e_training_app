@@ -35,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
 import com.composables.icons.lucide.CheckCheck
 import com.composables.icons.lucide.Lucide
@@ -45,6 +47,9 @@ import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.HtmlText
 import com.maspam.etrain.training.core.presentation.component.sanitizeHtml
 import com.maspam.etrain.training.domain.model.TopicModel
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 @Composable
 fun CommonContentPage(
@@ -55,6 +60,10 @@ fun CommonContentPage(
     markAsCompletedPressed: () -> Unit,
     onMenuClicked: () -> Unit
 ) {
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val real = topicModel.linkVideo?.substringAfter(".be/")
+    val id = real?.substringBefore("?")
 
     Scaffold(
         modifier = modifier
@@ -154,6 +163,24 @@ fun CommonContentPage(
                                     .fillMaxWidth()
                                     .padding(top = 20.dp)
                             )
+                            id?.let {
+                                AndroidView(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
+                                    factory = { context ->
+                                        YouTubePlayerView(context = context).apply {
+                                            lifecycleOwner.lifecycle.addObserver(this)
+
+                                            addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                                    youTubePlayer.loadVideo(it, 0f)
+                                                }
+                                            })
+                                        }
+                                    })
+                            }
                             key(topicModel.id) {
                                 HtmlText(
                                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 10.dp),

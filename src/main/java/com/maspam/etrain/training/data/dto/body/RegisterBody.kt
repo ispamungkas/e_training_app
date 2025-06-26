@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class RegisterBody(
     val nip: String,
     val name: String,
-    val ishead: Boolean
+    val role: String
 )

@@ -157,13 +157,22 @@ class TrainingViewModel(
     }
 
     fun setValueOfSearch(value: String) {
-        _state.update {
-            it.copy(
-                search = value,
-                filteredList = it.filteredList?.filter { dataFilter ->
-                    dataFilter.name?.contains(value) == true
-                }
-            )
+        if (value.isEmpty() || value == "") {
+            _state.update {
+                it.copy(
+                    search = value,
+                    filteredList = it.listTraining
+                )
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    search = value,
+                    filteredList = it.filteredList?.filter { dataFilter ->
+                        dataFilter.name?.contains(value, true) == true
+                    }
+                )
+            }
         }
     }
 

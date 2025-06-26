@@ -358,6 +358,7 @@ class RemoteTrainingDataSource(
                     formData {
                         append("name", topicBody.name ?: "")
                         append("content", topicBody.content ?: "")
+                        append("link_video", topicBody.linkVideo ?: "")
                         info?.let {
                             append("img", info.bytes, Headers.build {
                                 append(HttpHeaders.ContentType, info.mimeType)

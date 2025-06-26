@@ -8,7 +8,10 @@ data class AuthenticationState(
     val nip: String? = "",
     val password: String? = "",
     val name: String? = "",
-    val isHeadCheck: Boolean? = false,
+    val role: String? = "",
+
+    val options: List<String> = listOf("Kapala Bidang", "Teacher", "Head School"),
+    var expanded: Boolean = false,
 
     val nipErrorMessage: String? = "",
     val passwordErrorMessage: String? = "",

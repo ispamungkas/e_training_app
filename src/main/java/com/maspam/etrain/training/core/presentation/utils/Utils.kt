@@ -35,7 +35,16 @@ import com.composables.icons.lucide.Italic
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Save
 import com.composables.icons.lucide.Underline
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Paragraph
+import com.itextpdf.layout.element.Table
+import com.itextpdf.layout.properties.TextAlignment
+import com.itextpdf.layout.properties.UnitValue
+import com.maspam.etrain.training.domain.model.UserModel
 import com.mohamedrejeb.richeditor.model.RichTextState
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,6 +59,78 @@ fun Long.toDateTimeVersion2Formatter(): String {
     val date = Date(this * 1000)
     val format = SimpleDateFormat("dd - MM - yyyy", Locale.getDefault())
     return format.format(date)
+}
+
+fun generateUserTrainingReport(users: List<UserModel>, outputStream: OutputStream, tahun: Int): Boolean {
+    return try {
+        val pdfWriter = PdfWriter(outputStream)
+        val pdfDocument = PdfDocument(pdfWriter)
+        val document = Document(pdfDocument)
+
+        document.add(
+            Paragraph("Laporan Pelatihan Guru")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(24f)
+                .setBold()
+        )
+        document.add(
+            Paragraph("Tahun $tahun")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(16f)
+                .setBold()
+        )
+        document.add(Paragraph("\n"))
+
+        users.forEach { user ->
+            document.add(Paragraph("Detail Guru:").setBold().setFontSize(16f))
+            document.add(Paragraph("Nama: ${user.name}"))
+            if (user.nip != null && user.nip != "0000" && user.nip != "superuser") {
+                document.add(Paragraph("NIP: ${user.nip}"))
+            }
+            document.add(Paragraph("\n"))
+
+            if (!user.enrolls.isNullOrEmpty()) {
+                document.add(Paragraph("Pelatihan:").setBold().setFontSize(14f))
+
+                user.enrolls.forEach { enrollment ->
+                    val trainingDetail = enrollment.trainingDetail
+                    if (trainingDetail != null) {
+                        val table = Table(UnitValue.createPercentArray(floatArrayOf(1f, 3f)))
+                            .useAllAvailableWidth()
+
+                        table.addHeaderCell(Paragraph("Detail").setBold())
+                        table.addHeaderCell(Paragraph("Keterangan").setBold())
+
+                        table.addCell("Nama Pelatihan:")
+                        table.addCell(trainingDetail.name)
+
+                        table.addCell("Status:")
+                        table.addCell(enrollment.status?.replaceFirstChar { it.uppercase() } ?: "-")
+
+                        table.addCell("Kehadiran:")
+                        table.addCell(if (enrollment.attandance == true) "Hadir" else "Tidak Hadir")
+
+                        table.addCell("Total JP (Pelatihan):")
+                        table.addCell(enrollment.totalJp.toString())
+
+                        document.add(table)
+                        document.add(Paragraph("\n"))
+                    }
+                }
+            } else {
+                document.add(Paragraph("Tidak ada pelatihan yang diikuti.\n"))
+            }
+
+            document.add(Paragraph("---").setTextAlignment(TextAlignment.CENTER))
+            document.add(Paragraph("\n"))
+        }
+
+        document.close()
+        true
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)

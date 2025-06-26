@@ -7,7 +7,7 @@ import com.maspam.etrain.training.presentation.profile.state.UpdateDataProfileSt
 
 interface AuthenticationDataSource {
     suspend fun login(nip: String, password: String): Result<UserModel, NetworkError>
-    suspend fun register(nip: String, name: String, isHead: Boolean): Result<UserModel, NetworkError>
+    suspend fun register(nip: String, name: String, role: String): Result<UserModel, NetworkError>
     suspend fun generateOtp(nip: String): Result<String, NetworkError>
     suspend fun verifyOtp(otp: String): Result<String, NetworkError>
     suspend fun changePassword(nip: String, newPassword: String): Result<UserModel, NetworkError>

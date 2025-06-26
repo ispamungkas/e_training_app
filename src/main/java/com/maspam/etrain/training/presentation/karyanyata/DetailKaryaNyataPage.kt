@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +32,7 @@ import com.maspam.etrain.R
 import com.maspam.etrain.training.core.networking.constructUrl
 import com.maspam.etrain.training.core.presentation.component.CustomButtonField
 import com.maspam.etrain.training.core.presentation.component.CustomButtonFieldLoad
+import com.maspam.etrain.training.core.presentation.component.CustomTextField
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
@@ -92,7 +94,9 @@ fun DetailKaryaNyataPage(
         topBar = {
             TopBarWithArrowComponent(
                 section = stringResource(R.string.detail_attachment_karya_nyata)
-            ) {  }
+            ) {
+                onBackPress()
+            }
         }
     ) { innerPadding ->
         PullToRefreshBox(
@@ -122,11 +126,25 @@ fun DetailKaryaNyataPage(
                             buttonName = stringResource(R.string.show),
                             buttonColor = MaterialTheme.colorScheme.primary
                         ) {
-                            println(constructUrl(state.karyaNyata?.att ?: ""))
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(constructUrl(state.karyaNyata?.att ?: "")))
                             context.startActivity(intent, null)
                         }
                     }
+                    CustomTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
+                        label = stringResource(R.string.input_grade),
+                    ) {
+                        karyaNyataViewModel.setGrade(it)
+                    }
+                    androidx.compose.material3.Text(
+                        text = "* Grade must be (A, B, C, D)",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Normal,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    )
                 }
 
                 Row(
@@ -141,18 +159,20 @@ fun DetailKaryaNyataPage(
                         buttonName = stringResource(R.string.decline),
                         buttonColor = MaterialTheme.colorScheme.error,
                         onClick = {
-                            karyaNyataViewModel.updateKaryaNyata("decline")
+                            karyaNyataViewModel.updateKaryaNyata("decline", "")
                         }
                     )
-                    CustomButtonFieldLoad(
-                        modifier = Modifier.weight(0.5f),
-                        buttonName = stringResource(R.string.accept),
-                        buttonColor = MaterialTheme.colorScheme.primary,
-                        isLoading = false,
-                        onClick = {
-                            karyaNyataViewModel.updateKaryaNyata("accepted")
-                        }
-                    )
+                    if (state.grade?.isNotBlank() == true && state.grade == "A" || state.grade == "B" || state.grade == "C" || state.grade == "D") {
+                        CustomButtonFieldLoad(
+                            modifier = Modifier.weight(0.5f),
+                            buttonName = stringResource(R.string.accept),
+                            buttonColor = MaterialTheme.colorScheme.primary,
+                            isLoading = false,
+                            onClick = {
+                                karyaNyataViewModel.updateKaryaNyata("accepted", state.grade)
+                            }
+                        )
+                    }
                 }
             }
         }

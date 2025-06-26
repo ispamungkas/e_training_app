@@ -1,7 +1,5 @@
 package com.maspam.etrain.training.presentation.dashboard
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,23 +20,27 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composables.icons.lucide.Brain
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Newspaper
 import com.maspam.etrain.R
+import com.maspam.etrain.training.core.presentation.component.Menu
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarComponent
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.domain.model.NewsModel
 import com.maspam.etrain.training.presentation.dashboard.component.ImageSliderComponent
 import com.maspam.etrain.training.presentation.dashboard.component.LoadingComponent
+import com.maspam.etrain.training.presentation.dashboard.component.MenusComponent
 import com.maspam.etrain.training.presentation.dashboard.component.ModalTrainingDetailComponent
 import com.maspam.etrain.training.presentation.dashboard.component.NewsItemComponent
 import com.maspam.etrain.training.presentation.dashboard.component.OpenTrainingComponent
@@ -46,19 +49,21 @@ import com.maspam.etrain.training.presentation.dashboard.viewmodel.DashboardView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeacherDashboardPage(
+fun KabidDashboardPage(
     dashboardViewModel: DashboardViewModel,
-    navigateToLoginPage: () -> Unit,
+    modifier: Modifier = Modifier,
     navigateToEnrollList: () -> Unit,
-    onProfileClicked: () -> Unit,
     navigateToListOpenTraining: () -> Unit,
+    onProfileClicked: () -> Unit,
     navigateToListNews: () -> Unit,
     navigateToDetailNews: (NewsModel) -> Unit,
+    navigateToListTrainingManajement: () -> Unit,
+    navigateToKabidListNews: () -> Unit,
     navigateToScannerPage: () -> Unit,
-    modifier: Modifier = Modifier
+    navigateToLoginPage: () -> Unit
 ) {
+    val state by dashboardViewModel.state.collectAsState()
     val sheetState = rememberModalBottomSheetState()
-    val state by dashboardViewModel.state.collectAsStateWithLifecycle()
 
     state.error?.let {
         it.ToComposable(
@@ -92,32 +97,41 @@ fun TeacherDashboardPage(
     }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
         topBar = {
             TopBarComponent(
+                imageUri = state.user?.image,
                 name = state.user?.name ?: stringResource(R.string.username),
             ) {
                 onProfileClicked()
             }
-        },
+        }
     ) { innerPadding ->
+
         PullToRefreshBox(
             isRefreshing = state.isRefresh,
             onRefresh = {
-                dashboardViewModel.refresh()
+                dashboardViewModel.apply {
+                    refresh()
+                    getUser()
+                    getNews()
+                    getOpenTraining()
+                }
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize())
+            {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(innerPadding)
                 ) {
                     item {
                         Text(
                             stringResource(R.string.feature),
-                            style = MaterialTheme.typography.titleMedium.copy(
+                            style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
                             ),
@@ -127,21 +141,54 @@ fun TeacherDashboardPage(
 
                     item {
                         ImageSliderComponent(
-                            modifier = Modifier.padding(vertical = 10.dp)
+                            modifier = Modifier.padding(vertical = 20.dp)
                         )
                     }
 
                     item {
-                        OpenTrainingComponent(
+                        Text(
                             modifier = Modifier
-                                .padding(horizontal = 20.dp),
-                            dataTraining = state.openTrain ?: emptyList(),
+                                .padding(start = 20.dp, bottom = 10.dp, end = 20.dp),
+                            text = stringResource(R.string.menu),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal)
+                        )
+                    }
+
+                    item {
+                        MenusComponent(
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp, vertical = 15.dp),
+                            menus = listOf(
+                                Menu(
+                                    name = stringResource(R.string.training),
+                                    imageVector = Lucide.Brain
+                                ),
+                                Menu(
+                                    name = stringResource(R.string.news),
+                                    imageVector = Lucide.Newspaper
+                                ),
+                            )
+                        ) { index ->
+                            when (index) {
+                                0 -> navigateToListTrainingManajement()
+                                1 -> navigateToKabidListNews()
+                            }
+
+                        }
+                    }
+
+                    item {
+                        OpenTrainingComponent(
                             currentTraining = state.user?.enroll ?: emptyList(),
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                            dataTraining = state.openTrain ?: emptyList(),
                             isLoading = state.isLoading,
                             onClickItem = { id ->
                                 dashboardViewModel.setModalBottomSheetState(value = true, id = id)
                             },
-                            navigateToListOpenTraining = navigateToListOpenTraining
+                            navigateToListOpenTraining = {
+                                navigateToListOpenTraining()
+                            },
                         )
                     }
 
@@ -178,7 +225,9 @@ fun TeacherDashboardPage(
                         items(4) {
                             LoadingComponent(
                                 size = 110.dp,
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp, vertical = 5.dp)
                             )
                         }
                     } else {
@@ -189,7 +238,9 @@ fun TeacherDashboardPage(
                                     newsHeadline = newsItem.desc,
                                     author = newsItem.author,
                                     postDate = newsItem.publishDate,
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 5.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 20.dp, vertical = 5.dp)
                                         .clickable {
                                             navigateToDetailNews(newsItem)
                                         }
@@ -213,7 +264,6 @@ fun TeacherDashboardPage(
 //                    navigateToScannerPage()
 //                }
             }
-
             if (state.isBottomSheetShow == true) {
                 ModalBottomSheet(
                     onDismissRequest = {
@@ -241,20 +291,11 @@ fun TeacherDashboardPage(
                             data?.id?.let {
                                 dashboardViewModel.enrollTraining(trainingId = it)
                             }
+
                         },
                     )
                 }
             }
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(
-    showBackground = true,
-    device = "id:pixel_5"
-)
-@Composable
-private fun TPrev() {
-//    TeacherDashboardPage()
 }

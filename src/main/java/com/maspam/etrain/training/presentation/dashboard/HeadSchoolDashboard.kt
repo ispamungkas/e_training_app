@@ -30,8 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.composables.icons.lucide.BookOpenText
-import com.composables.icons.lucide.Brain
 import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.ReceiptText
 import com.maspam.etrain.R
 import com.maspam.etrain.training.core.presentation.component.Menu
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
@@ -57,7 +57,7 @@ fun HeadSchoolDashboardPage(
     onProfileClicked: () -> Unit,
     navigateToListNews: () -> Unit,
     navigateToDetailNews: (NewsModel) -> Unit,
-    navigateToListTrainingManajement: () -> Unit,
+    navigateToReport: () -> Unit,
     navigateToKaryaNyataManajement: () -> Unit,
     navigateToScannerPage: () -> Unit,
     navigateToLoginPage: () -> Unit
@@ -160,8 +160,8 @@ fun HeadSchoolDashboardPage(
                                 .padding(horizontal = 20.dp, vertical = 15.dp),
                             menus = listOf(
                                 Menu(
-                                    name = stringResource(R.string.training),
-                                    imageVector = Lucide.Brain
+                                    name = stringResource(R.string.report),
+                                    imageVector = Lucide.ReceiptText
                                 ),
                                 Menu(
                                     name = stringResource(R.string.karyanyata),
@@ -170,7 +170,7 @@ fun HeadSchoolDashboardPage(
                             )
                         ) { index ->
                             when (index) {
-                                0 -> navigateToListTrainingManajement()
+                                0 -> navigateToReport()
                                 1 -> navigateToKaryaNyataManajement()
                             }
 
@@ -235,7 +235,7 @@ fun HeadSchoolDashboardPage(
                             items(news) { newsItem ->
                                 NewsItemComponent(
                                     image = newsItem.image,
-                                    newsHeadline = newsItem.desc,
+                                    newsHeadline = newsItem.name,
                                     author = newsItem.author,
                                     postDate = newsItem.publishDate,
                                     modifier = Modifier
@@ -258,11 +258,11 @@ fun HeadSchoolDashboardPage(
 
                     item { Spacer(modifier = Modifier.height(75.dp)) }
                 }
-                ScannerButtonComponent(
-                    modifier = Modifier.align(alignment = Alignment.BottomCenter)
-                ) {
-                    navigateToScannerPage()
-                }
+//                ScannerButtonComponent(
+//                    modifier = Modifier.align(alignment = Alignment.BottomCenter)
+//                ) {
+//                    navigateToScannerPage()
+//                }
             }
             if (state.isBottomSheetShow == true) {
                 ModalBottomSheet(

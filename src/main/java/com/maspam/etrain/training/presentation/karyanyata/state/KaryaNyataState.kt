@@ -12,6 +12,7 @@ data class KaryaNyataState(
     val isRefresh: Boolean = false,
     val isSuccess: Boolean = false,
     val error: NetworkError? = null,
+    var grade: String? = "",
 
     val enroll: List<EnrollModel>? = null,
     val karyaNyata: KaryaNyataModel? = null,

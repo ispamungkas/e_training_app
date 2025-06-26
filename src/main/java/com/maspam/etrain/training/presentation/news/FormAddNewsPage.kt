@@ -1,6 +1,5 @@
-package com.maspam.etrain.training.presentation.training
+package com.maspam.etrain.training.presentation.news
 
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,26 +16,23 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maspam.etrain.R
@@ -46,59 +42,58 @@ import com.maspam.etrain.training.core.presentation.component.CustomTextField
 import com.maspam.etrain.training.core.presentation.component.LoadingScreen
 import com.maspam.etrain.training.core.presentation.component.SuccessDialog
 import com.maspam.etrain.training.core.presentation.component.TopBarWithArrowComponent
-import com.maspam.etrain.training.core.presentation.utils.EditorControls
 import com.maspam.etrain.training.core.presentation.utils.ToComposable
 import com.maspam.etrain.training.core.presentation.utils.eventListener
-import com.maspam.etrain.training.data.dto.body.TopicBody
-import com.maspam.etrain.training.domain.model.TopicModel
+import com.maspam.etrain.training.core.presentation.utils.getFileSizeInMB
+import com.maspam.etrain.training.data.dto.body.NewsBody
 import com.maspam.etrain.training.presentation.global.event.GlobalEvent
-import com.maspam.etrain.training.presentation.training.event.FormTopicTrainingEvent
-import com.maspam.etrain.training.presentation.training.viewmodel.ListTopicViewModel
-import com.mohamedrejeb.richeditor.model.rememberRichTextState
-import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
+import com.maspam.etrain.training.presentation.news.event.FormNewsEvent
+import com.maspam.etrain.training.presentation.news.viewmodel.NewsViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormEditTopicPage(
-    listTopicViewModel: ListTopicViewModel,
-    topicModel: TopicModel,
+fun FormAddNewsPage(
     modifier: Modifier = Modifier,
+    newsViewModel: NewsViewModel,
     navigateToLoginPage: () -> Unit,
     onBackPressed: () -> Unit
 ) {
-
-    val richState = rememberRichTextState()
-
-    LaunchedEffect(Unit) {
-        listTopicViewModel.selectedTopicViewModel(value = topicModel)
-        richState.setHtml(topicModel.content ?: "")
-    }
-
-    val state by listTopicViewModel.state.collectAsStateWithLifecycle()
-    val selectedTopic = state.selectedData
+    val state by newsViewModel.state.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState()
-    val titleSize = MaterialTheme.typography.displaySmall.fontSize
-    val subtitleSize = MaterialTheme.typography.titleLarge.fontSize
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    val filename: String? = state.selectedData?.img?.path?.substring((state.selectedData?.img?.path?.lastIndexOf("/")?.plus(1)!!))
+    val filename: String? = state.img.path?.substring((state.img.path?.lastIndexOf("/")?.plus(1)!!))
 
     val singlePickPicture = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { result ->
         result?.let {
-            listTopicViewModel.onChangeAction(
-                action = FormTopicTrainingEvent.ImgChange(it)
-            )
+            val checkSize = getFileSizeInMB(context = context, uri = it)
+            if (checkSize > 2.0) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.image_size_more_than_2mb),
+                        actionLabel = context.getString(R.string.close),
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            } else {
+                newsViewModel.onChangeAction(
+                    action = FormNewsEvent.ImgChange(it)
+                )
+            }
         }
     }
 
     eventListener(
-        listTopicViewModel.globalEvent
+        newsViewModel.globalEvent
     ) { event ->
         when (event) {
             is GlobalEvent.Error -> {
-                listTopicViewModel.setError(event.e)
+                newsViewModel.setError(event.e)
             }
         }
     }
@@ -108,19 +103,18 @@ fun FormEditTopicPage(
             isLoading = state.isLoading,
             navigateToLoginPage = navigateToLoginPage,
             tryRequestAgain = {
-                listTopicViewModel.apply {
+                newsViewModel.apply {
                     setError(e = null)
-                    updateTopic(state.selectedData?.copy(content = richState.toHtml()) ?: TopicBody())
                 }
             }
         ) {
-            listTopicViewModel.setError(e = null)
+            newsViewModel.setError(e = null)
         }
     }
 
     if (state.isSuccess) {
         SuccessDialog(
-            message = "Topic successfully updated"
+            message = "News successfully added"
         ) {
             onBackPressed()
         }
@@ -130,9 +124,10 @@ fun FormEditTopicPage(
         modifier = modifier
             .systemBarsPadding()
             .fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopBarWithArrowComponent(
-                section = stringResource(R.string.topic_section)
+                section = stringResource(R.string.add_news)
             ) {
                 onBackPressed()
             }
@@ -151,34 +146,21 @@ fun FormEditTopicPage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 15.dp, start = 20.dp, end = 20.dp),
-                            valueInput = topicModel.name,
+                            valueInput = state.name,
                             readOnly = false,
                             label = stringResource(R.string.name_training),
+                            errorMessage = state.nameError,
                             hint = stringResource(R.string.name_training)
                         ) {
-                            listTopicViewModel.onChangeAction(action = FormTopicTrainingEvent.NameChange(it))
+                            newsViewModel.onChangeAction(action = FormNewsEvent.NameChange(it))
                         }
-                        CustomTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 15.dp, start = 20.dp, end = 20.dp),
-                            valueInput = topicModel.linkVideo,
-                            readOnly = false,
-                            label = stringResource(R.string.input_link_video),
-                            hint = stringResource(R.string.input_link_video)
-                        ) {
-                            listTopicViewModel.onChangeAction(action = FormTopicTrainingEvent.LinkVideoChange(it))
-                        }
-                        HorizontalDivider(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 20.dp))
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp, vertical = 10.dp)
                                 .border(
                                     width = 2.dp,
-                                    color = if (state.isPictureWasAdded == true) Color.Green else MaterialTheme.colorScheme.primary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
@@ -203,59 +185,9 @@ fun FormEditTopicPage(
                             )
                         }
 
-                        EditorControls(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            state = richState,
-                            onBoldClick = {
-                                richState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                            },
-                            onItalicClick = {
-                                richState.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
-                            },
-                            onUnderlineClick = {
-                                richState.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                            },
-                            onTitleClick = {
-                                richState.toggleSpanStyle(SpanStyle(fontSize = titleSize))
-                            },
-                            onSubtitleClick = {
-                                richState.toggleSpanStyle(SpanStyle(fontSize = subtitleSize))
-                            },
-                            onTextColorClick = {
-                                richState.toggleSpanStyle(SpanStyle(color = Color.Red))
-                            },
-                            onStartAlignClick = {
-                                richState.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Start))
-                            },
-                            onEndAlignClick = {
-                                richState.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.End))
-                            },
-                            onCenterAlignClick = {
-                                richState.toggleParagraphStyle(ParagraphStyle(textAlign = TextAlign.Center))
-                            },
-                            onExportClick = {
-                                FormTopicTrainingEvent.ContentChange(richState.toHtml())
-                                Toast.makeText(context, "saved", Toast.LENGTH_SHORT).show()
-                            },
-                            valueSave = {
-                                FormTopicTrainingEvent.ContentChange(richState.toHtml())
-                                Toast.makeText(context, "saved", Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                        RichTextEditor(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp)
-                                .padding(horizontal = 20.dp),
-                            state = richState,
-                        )
-
-                        if (state.contentError?.isNotBlank() == true) {
-                            Spacer(modifier = Modifier.height(5.dp))
+                        if (state.imgError.isNotBlank()) {
                             Text(
-                                text = state.contentError ?: "",
+                                text = state.imgError,
                                 style = MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.error),
                                 textAlign = TextAlign.End,
                                 modifier = Modifier
@@ -263,9 +195,22 @@ fun FormEditTopicPage(
                                     .padding(horizontal = 20.dp)
                             )
                         }
+
+                        CustomTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 15.dp, start = 20.dp, end = 20.dp),
+                            valueInput = state.desc,
+                            singleLine = false,
+                            readOnly = false,
+                            label = stringResource(R.string.description),
+                            errorMessage = state.descError,
+                            hint = stringResource(R.string.input_description_of_training)
+                        ) {
+                            newsViewModel.onChangeAction(action = FormNewsEvent.DescChange(it))
+                        }
                         Spacer(modifier = Modifier.height(110.dp))
                     }
-
                 }
             }
             CustomButtonField(
@@ -276,34 +221,38 @@ fun FormEditTopicPage(
                 buttonName = stringResource(R.string.submit),
                 buttonColor = MaterialTheme.colorScheme.primary
             ) {
-                listTopicViewModel.setShowConfirmation(value = true)
+                newsViewModel.showConfirmationModal(value = true)
             }
-            if (state.showConfirmation) {
+            if (state.userConfirmation) {
                 ModalBottomSheet(
                     onDismissRequest = {
-                        listTopicViewModel.setShowConfirmation(value = false)
+                        newsViewModel.showConfirmationModal(value = false)
                     },
                     sheetState = sheetState,
                 ) {
                     ConfirmationBottomSheetFlexComponent(
                         message = stringResource(R.string.are_you_sure_the_data_is_valid),
-                        isLoading = state.isLoading,
+                        isLoading = state.isLoading ?: false,
                         onDismiss = {
-                            listTopicViewModel.setShowConfirmation(value = false)
+                            newsViewModel.showConfirmationModal(false)
                         }
                     ) {
-
-                        listTopicViewModel.setShowConfirmation(value = false)
-                        listTopicViewModel.onChangeAction(
-                            action = FormTopicTrainingEvent.Submit(
-                                topicBody = selectedTopic?.copy(content = richState.toHtml()) ?: TopicBody()
+                        println("cek button")
+                        newsViewModel.showConfirmationModal(false)
+                        newsViewModel.onChangeAction(
+                            action = FormNewsEvent.Submit(
+                                newsBody = NewsBody(
+                                    name = state.name,
+                                    desc = state.desc,
+                                    image = state.img,
+                                )
                             )
                         )
 
                     }
                 }
             }
-            if (state.isLoading) {
+            if (state.isLoading == true) {
                 LoadingScreen()
             }
         }
